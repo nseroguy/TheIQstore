@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The IQ Bakery & Confectionery | Dispatch & Tracking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif-title { font-family: 'Playfair Display', serif; }
+    .active-nav-tab { background-color: #f59e0b; color: #ffffff; }
+  </style>
+</head>
+<body class="bg-amber-50/40 text-stone-800 min-h-screen flex flex-col">
+
+  <!-- TOP ROLE SWITCHER NAVBAR -->
+  <header class="bg-stone-900 text-stone-100 shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <span class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-stone-900 font-bold text-xl shadow">
+          <i class="fa-solid fa-cake-candles"></i>
+        </span>
+        <div>
+          <h1 class="font-serif-title text-xl font-bold tracking-tight text-amber-100">The IQ Bakery</h1>
+          <p class="text-xs text-amber-400 font-medium">Artisanal Confectionery & Swift Dispatch</p>
+        </div>
+      </div>
+
+      <!-- Module Navigation Switcher -->
+      <nav class="flex items-center space-x-1 sm:space-x-2 bg-stone-800 p-1.5 rounded-xl border border-stone-700 text-xs sm:text-sm font-medium">
+        <button onclick="switchView('store')" id="tab-store" class="active-nav-tab px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-store"></i> <span>Customer Store</span>
+        </button>
+        <button onclick="switchView('tracking')" id="tab-tracking" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-route"></i> <span>Live Tracker</span>
+        </button>
+        <button onclick="switchView('admin')" id="tab-admin" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-kitchen-set"></i> <span>Bakery Dispatch</span>
+        </button>
+        <button onclick="switchView('rider')" id="tab-rider" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-motorcycle"></i> <span>Rider Portal</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- 1. CUSTOMER STORE & CART SECTION -->
+    <section id="view-store" class="space-y-8">
+      <!-- Hero Banner -->
+      <div class="relative rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 overflow-hidden shadow-xl">
+        <div class="relative z-10 max-w-2xl space-y-4">
+          <span class="inline-block px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold tracking-wider uppercase border border-amber-400/30">Fresh From The Oven</span>
+          <h2 class="font-serif-title text-3xl sm:text-5xl font-bold leading-tight">Freshly Baked Cakes, Pastries & Desserts</h2>
+          <p class="text-amber-100/90 text-sm sm:text-base">Order custom celebration cakes and handcrafted confections with live rider tracking directly to your door.</p>
+        </div>
+        <div class="absolute -right-12 -bottom-12 opacity-15 text-stone-100 text-9xl pointer-events-none">
+          <i class="fa-solid fa-cookie-bite"></i>
+        </div>
+      </div>
+
+      <!-- Product Catalog & Cart Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <!-- Products Column -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+            <h3 class="text-xl font-bold text-stone-900 font-serif-title">Today's Fresh Batch</h3>
+            <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-full">Same-Day Delivery</span>
+          </div>
+
+          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Dynamic products injected by JS -->
+          </div>
+        </div>
+
+        <!-- Cart & Checkout Column -->
+        <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm sticky top-24 space-y-6">
+          <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+            <h3 class="font-bold text-lg text-stone-900 flex items-center gap-2">
+              <i class="fa-solid fa-basket-shopping text-amber-600"></i> Your Basket
+            </h3>
+            <span id="cart-count-badge" class="bg-stone-100 text-stone-700 text-xs px-2 py-0.5 rounded-full font-bold">0 items</span>
+          </div>
+
+          <div id="cart-items" class="divide-y divide-stone-100 max-h-60 overflow-y-auto space-y-3">
+            <p class="text-sm text-stone-400 text-center py-6">Your confectionery cart is empty.</p>
+          </div>
+
+          <!-- Checkout Form -->
+          <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-4 pt-2 border-t border-stone-100">
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 mb-1">Recipient Name</label>
+              <input type="text" id="cust-name" required placeholder="e.g. Alice Walker" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 mb-1">Phone Number (For Rider Contact)</label>
+              <input type="tel" id="cust-phone" required placeholder="e.g. +256 700 123456" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 mb-1">Delivery Address</label>
+              <textarea id="cust-address" required rows="2" placeholder="e.g. Plot 14 Kampala Road, Suite 3B" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-stone-600 mb-1">Cake Inscription / Special Instructions</label>
+              <input type="text" id="cust-notes" placeholder="e.g. 'Happy 30th Birthday Brian!'" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="bg-amber-50/70 p-3.5 rounded-xl space-y-1 text-xs">
+              <div class="flex justify-between text-stone-600"><span>Confectionery Total:</span><span id="summary-subtotal" class="font-semibold">$0.00</span></div>
+              <div class="flex justify-between text-stone-600"><span>Courier Delivery:</span><span class="font-semibold">$4.50</span></div>
+              <div class="flex justify-between text-stone-900 font-bold text-sm pt-1 border-t border-amber-200/60"><span>Total Due:</span><span id="summary-total">$4.50</span></div>
+            </div>
+
+            <button type="submit" id="btn-submit-order" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-lock"></i> <span>Place Order & Dispatch</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CUSTOMER LIVE TRACKING SECTION -->
+    <section id="view-tracking" class="hidden max-w-3xl mx-auto space-y-6">
+      <div class="bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Track Your Sweet Delivery</h2>
+          <p class="text-sm text-stone-500">Monitor fresh preparation, bakery boxing, and real-time courier arrival.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex gap-2">
+          <input type="text" id="track-input" placeholder="Enter Tracking Code (e.g. IQ-TEST88)" class="flex-grow px-4 py-2.5 rounded-xl border border-stone-200 uppercase font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          <button onclick="fetchTrackingData(document.getElementById('track-input').value.trim())" class="px-5 py-2.5 bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold rounded-xl flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass"></i> Track
+          </button>
+        </div>
+
+        <!-- Tracking Visual Card -->
+        <div id="tracking-card" class="hidden space-y-8 pt-4 border-t border-stone-100">
+          <!-- Metadata header -->
+          <div class="flex flex-wrap items-center justify-between gap-4 bg-stone-50 p-4 rounded-xl border border-stone-100">
+            <div>
+              <span class="text-xs uppercase tracking-wider text-stone-400 font-mono">Order Tracking ID</span>
+              <p id="track-code-display" class="font-mono font-bold text-lg text-amber-700">IQ-000000</p>
+            </div>
+            <div>
+              <span class="text-xs uppercase tracking-wider text-stone-400">Current Phase</span>
+              <p id="track-status-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Processing</p>
+            </div>
+            <div>
+              <span class="text-xs uppercase tracking-wider text-stone-400">Est. Arrival</span>
+              <p id="track-eta" class="text-sm font-semibold text-stone-800">Within 45 mins</p>
+            </div>
+          </div>
+
+          <!-- Milestones Progress Timeline -->
+          <div class="relative pl-6 sm:pl-8 border-l-2 border-amber-200 space-y-8 my-6 ml-3">
+            <!-- Step 1: Placed -->
+            <div id="step-placed" class="relative group">
+              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs shadow">
+                <i class="fa-solid fa-receipt"></i>
+              </span>
+              <h4 class="font-bold text-stone-900 text-sm">Order Placed & Confirmed</h4>
+              <p class="text-xs text-stone-500">Order received in kitchen queue.</p>
+            </div>
+            <!-- Step 2: Preparing -->
+            <div id="step-baking" class="relative group">
+              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
+                <i class="fa-solid fa-fire-burner"></i>
+              </span>
+              <h4 class="font-bold text-stone-900 text-sm">Oven Baking & Decoration</h4>
+              <p class="text-xs text-stone-500">Master bakers decorating and safely boxing packaging.</p>
+            </div>
+            <!-- Step 3: Assigned -->
+            <div id="step-assigned" class="relative group">
+              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
+                <i class="fa-solid fa-user-check"></i>
+              </span>
+              <h4 class="font-bold text-stone-900 text-sm">Courier Assigned</h4>
+              <p class="text-xs text-stone-500">Bakery delivery rider assigned to pickup.</p>
+            </div>
+            <!-- Step 4: In Transit -->
+            <div id="step-transit" class="relative group">
+              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
+                <i class="fa-solid fa-motorcycle"></i>
+              </span>
+              <h4 class="font-bold text-stone-900 text-sm">Rider Out For Delivery</h4>
+              <p class="text-xs text-stone-500">Carefully transporting in a temperature-controlled thermal bag.</p>
+            </div>
+            <!-- Step 5: Delivered -->
+            <div id="step-delivered" class="relative group">
+              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
+                <i class="fa-solid fa-check"></i>
+              </span>
+              <h4 class="font-bold text-stone-900 text-sm">Handed Over & Enjoyed</h4>
+              <p class="text-xs text-stone-500">Delivered directly to recipient.</p>
+            </div>
+          </div>
+
+          <!-- Recipient & Notes Box -->
+          <div class="bg-amber-50/50 p-4 rounded-xl text-xs space-y-1.5 border border-amber-100">
+            <p><strong class="text-stone-700">Delivery Destination:</strong> <span id="track-address" class="text-stone-600">-</span></p>
+            <p><strong class="text-stone-700">Recipient:</strong> <span id="track-recipient" class="text-stone-600">-</span></p>
+            <p><strong class="text-stone-700">Special Cake Note:</strong> <span id="track-notes" class="text-stone-600">-</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. BAKERY ADMIN & KITCHEN DISPATCH -->
+    <section id="view-admin" class="hidden space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch & Order Desk</h2>
+          <p class="text-sm text-stone-500">Manage incoming confectionery requests and assign riders.</p>
+        </div>
+        <button onclick="renderAdminBoard()" class="px-4 py-2 bg-stone-900 text-white rounded-xl text-xs font-semibold hover:bg-stone-800 transition">
+          <i class="fa-solid fa-arrows-rotate"></i> Refresh Queue
+        </button>
+      </div>
+
+      <!-- Live Dispatch Table -->
+      <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-stone-50 text-stone-600 border-b border-stone-200 uppercase font-semibold">
+              <tr>
+                <th class="p-3.5">Tracking / Order</th>
+                <th class="p-3.5">Customer & Items</th>
+                <th class="p-3.5">Destination</th>
+                <th class="p-3.5">Status</th>
+                <th class="p-3.5">Assign Courier</th>
+                <th class="p-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-tbody" class="divide-y divide-stone-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. RIDER / COURIER MOBILE CONSOLE -->
+    <section id="view-rider" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="bg-stone-900 text-stone-100 p-6 rounded-2xl shadow-lg flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl bg-amber-500 text-stone-900 flex items-center justify-center text-xl font-bold">
+            <i class="fa-solid fa-helmet-safety"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg">Rider Portal: John Courier</h3>
+            <p class="text-xs text-amber-400 font-mono">Motorcycle Unit #04 • Active Duty</p>
+          </div>
+        </div>
+        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs rounded-full font-bold">Online</span>
+      </div>
+
+      <div class="space-y-4">
+        <h4 class="font-bold text-stone-900 font-serif-title text-lg">Assigned Delivery Shipments</h4>
+        <div id="rider-delivery-cards" class="space-y-4">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-stone-900 text-stone-400 text-xs py-6 border-t border-stone-800 text-center mt-12">
+    <p>© 2026 The IQ Bakery & Confectionery Ltd. Powered by Render & PostgreSQL.</p>
+  </footer>
+
+  <script>
+    // --- BAKERY CATALOG DATA ---
+    const BAKERY_CATALOG = [
+      { id: 'prod_1', name: 'Belgian Dark Chocolate Cake (1kg)', price: 28.50, desc: 'Rich 70% cocoa sponge layered with silken ganache.', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
+      { id: 'prod_2', name: 'Madagascar Vanilla Dream Cake (1kg)', price: 24.00, desc: 'Fluffy sponge with bourbon vanilla cream & sugar flowers.', img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=500' },
+      { id: 'prod_3', name: 'Artisan Macaron Gift Box (12 pcs)', price: 16.50, desc: 'Assorted pistachio, salted caramel, and raspberry macarons.', img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' },
+      { id: 'prod_4', name: 'Butter Croissant Box (6 pcs)', price: 12.00, desc: 'Flaky 100% French cultured butter croissants fresh baked.', img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500' }
+    ];
+
+    // IN-MEMORY SHARED STORE STATE (Synced with API or local fallback)
+    let cart = {};
+    let mockOrders = [
+      {
+        tracking_code: 'IQ-TEST88',
+        recipient_name: 'Alice Customer',
+        recipient_phone: '+256700000003',
+        shipping_address: 'Plot 14 Kampala Road, Kampala',
+        notes: 'Happy Birthday Alice! - Gold candles included',
+        items: 'Belgian Dark Chocolate Cake (1kg) x1',
+        total_amount: 33.00,
+        delivery_status: 'in_transit',
+        driver_name: 'John Courier'
+      },
+      {
+        tracking_code: 'IQ-B8920',
+        recipient_name: 'David Kasule',
+        recipient_phone: '+256700000088',
+        shipping_address: 'Acacia Mall, Kisementi, Floor 2',
+        notes: 'Leave at front desk reception',
+        items: 'Artisan Macaron Gift Box x2',
+        total_amount: 37.50,
+        delivery_status: 'unassigned',
+        driver_name: null
+      }
+    ];
+
+    // --- NAVIGATION LOGIC ---
+    function switchView(viewName) {
+      ['store', 'tracking', 'admin', 'rider'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        document.getElementById(`tab-${v}`).className = "px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5";
+      });
+      document.getElementById(`view-${viewName}`).classList.remove('hidden');
+      document.getElementById(`tab-${viewName}`).className = "active-nav-tab px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5";
+
+      if (viewName === 'admin') renderAdminBoard();
+      if (viewName === 'rider') renderRiderPortal();
+    }
+
+    // --- STOREFRONT & CART LOGIC ---
+    function renderProducts() {
+      const container = document.getElementById('products-grid');
+      container.innerHTML = BAKERY_CATALOG.map(p => `
+        <div class="bg-white rounded-2xl overflow-hidden border border-stone-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition">
+          <img src="${p.img}" alt="${p.name}" class="h-44 w-full object-cover" />
+          <div class="p-5 flex-grow flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex justify-between items-start">
+                <h4 class="font-bold text-stone-900 text-base font-serif-title">${p.name}</h4>
+                <span class="text-amber-700 font-bold font-mono text-sm">$${p.price.toFixed(2)}</span>
+              </div>
+              <p class="text-xs text-stone-500 mt-1">${p.desc}</p>
+            </div>
+            <button onclick="addToCart('${p.id}')" class="w-full py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold rounded-xl border border-amber-200 transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Add to Box
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(prodId) {
+      cart[prodId] = (cart[prodId] || 0) + 1;
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const itemsContainer = document.getElementById('cart-items');
+      const itemKeys = Object.keys(cart);
+      let subtotal = 0;
+      let totalCount = 0;
+
+      if (itemKeys.length === 0) {
+        itemsContainer.innerHTML = '<p class="text-xs text-stone-400 text-center py-6">Your confectionery cart is empty.</p>';
+      } else {
+        itemsContainer.innerHTML = itemKeys.map(id => {
+          const prod = BAKERY_CATALOG.find(p => p.id === id);
+          const qty = cart[id];
+          const itemTotal = prod.price * qty;
+          subtotal += itemTotal;
+          totalCount += qty;
+          return `
+            <div class="flex items-center justify-between text-xs py-2">
+              <div>
+                <p class="font-semibold text-stone-800">${prod.name}</p>
+                <p class="text-stone-400 font-mono">$${prod.price.toFixed(2)} × ${qty}</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-stone-700 font-mono">$${itemTotal.toFixed(2)}</span>
+                <button onclick="removeFromCart('${id}')" class="text-stone-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('cart-count-badge').innerText = `${totalCount} items`;
+      document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('summary-total').innerText = `$${(subtotal > 0 ? subtotal + 4.50 : 0).toFixed(2)}`;
+    }
+
+    function removeFromCart(id) {
+      delete cart[id];
+      updateCartUI();
+    }
+
+    async function handleCheckout(e) {
+      e.preventDefault();
+      if (Object.keys(cart).length === 0) {
+        alert("Please add at least one bakery item to your basket.");
+        return;
+      }
+
+      const orderPayload = {
+        recipient_name: document.getElementById('cust-name').value,
+        recipient_phone: document.getElementById('cust-phone').value,
+        shipping_address: document.getElementById('cust-address').value,
+        notes: document.getElementById('cust-notes').value || 'Handle confectionery with care',
+        items: Object.keys(cart).map(id => `${BAKERY_CATALOG.find(p => p.id === id).name} x${cart[id]}`).join(', '),
+        total_amount: parseFloat(document.getElementById('summary-total').innerText.replace('$', ''))
+      };
+
+      // Try hitting Render backend or fallback to local memory
+      let trackingCode = 'IQ-B' + Math.floor(1000 + Math.random() * 9000);
+      try {
+        const res = await fetch('https://theiqstore.onrender.com/api/v1/deliveries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          trackingCode = data.delivery.tracking_code;
+        }
+      } catch (err) {
+        console.warn("Using local memory store fallback:", err);
+      }
+
+      const newOrder = {
+        ...orderPayload,
+        tracking_code: trackingCode,
+        delivery_status: 'unassigned',
+        driver_name: null
+      };
+      mockOrders.unshift(newOrder);
+
+      // Clear Cart & Jump to Tracking
+      cart = {};
+      updateCartUI();
+      document.getElementById('checkout-form').reset();
+      switchView('tracking');
+      document.getElementById('track-input').value = trackingCode;
+      fetchTrackingData(trackingCode);
+    }
+
+    // --- TRACKING LOGIC ---
+    async function fetchTrackingData(code) {
+      if (!code) return;
+      document.getElementById('tracking-card').classList.remove('hidden');
+
+      // Check remote Render API first, then local mock store
+      let order = null;
+      try {
+        const res = await fetch(`https://theiqstore.onrender.com/api/v1/deliveries/track/${code}`);
+        if (res.ok) {
+          const data = await res.json();
+          order = data.tracking;
+        }
+      } catch (e) {
+        console.warn("Remote lookup timed out, querying local orders...");
+      }
+
+      if (!order) {
+        order = mockOrders.find(o => o.tracking_code.toUpperCase() === code.toUpperCase());
+      }
+
+      if (!order) {
+        alert("Tracking number not found. Try IQ-TEST88");
+        return;
+      }
+
+      document.getElementById('track-code-display').innerText = order.tracking_code;
+      document.getElementById('track-status-badge').innerText = order.delivery_status.replace('_', ' ').toUpperCase();
+      document.getElementById('track-address').innerText = order.shipping_address;
+      document.getElementById('track-recipient').innerText = `${order.recipient_name} (${order.recipient_phone})`;
+      document.getElementById('track-notes').innerText = order.notes || 'No custom inscription specified.';
+
+      // Update Milestones Colors
+      const steps = ['placed', 'baking', 'assigned', 'transit', 'delivered'];
+      const statusMap = {
+        'unassigned': 2,
+        'assigned': 3,
+        'picked_up': 4,
+        'in_transit': 4,
+        'delivered': 5
+      };
+
+      const currentIdx = statusMap[order.delivery_status] || 1;
+      steps.forEach((step, idx) => {
+        const el = document.getElementById(`step-${step}`);
+        const iconSpan = el.querySelector('span');
+        if (idx + 1 < currentIdx) {
+          iconSpan.className = "absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs shadow";
+        } else if (idx + 1 === currentIdx) {
+          iconSpan.className = "absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-amber-500 text-white animate-pulse flex items-center justify-center text-xs shadow";
+        } else {
+          iconSpan.className = "absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-400 flex items-center justify-center text-xs shadow";
+        }
+      });
+    }
+
+    // --- BAKERY ADMIN KITCHEN DISPATCH ---
+    function renderAdminBoard() {
+      const tbody = document.getElementById('admin-orders-tbody');
+      tbody.innerHTML = mockOrders.map(o => `
+        <tr class="hover:bg-stone-50 border-b border-stone-100">
+          <td class="p-3.5">
+            <span class="font-mono font-bold text-amber-700">${o.tracking_code}</span>
+            <p class="text-[11px] text-stone-400">$${o.total_amount ? o.total_amount.toFixed(2) : '30.00'}</p>
+          </td>
+          <td class="p-3.5">
+            <p class="font-semibold text-stone-800">${o.recipient_name}</p>
+            <p class="text-[11px] text-stone-500">${o.items || 'Dark Chocolate Cake'}</p>
+          </td>
+          <td class="p-3.5 text-stone-600 max-w-xs truncate">${o.shipping_address}</td>
+          <td class="p-3.5">
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${
+              o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
+              o.delivery_status === 'in_transit' ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'
+            }">${o.delivery_status}</span>
+          </td>
+          <td class="p-3.5">
+            <span class="text-xs text-stone-700 font-medium">${o.driver_name || '<em class="text-stone-400">Not Assigned</em>'}</span>
+          </td>
+          <td class="p-3.5 text-right space-x-1">
+            ${o.delivery_status === 'unassigned' ? `
+              <button onclick="adminAssignRider('${o.tracking_code}')" class="px-3 py-1 bg-amber-600 text-white rounded-lg text-xs font-semibold hover:bg-amber-700">Assign Courier</button>
+            ` : `
+              <span class="text-xs text-stone-400"><i class="fa-solid fa-check"></i> Dispatched</span>
+            `}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function adminAssignRider(code) {
+      const order = mockOrders.find(o => o.tracking_code === code);
+      if (order) {
+        order.driver_name = 'John Courier (Motorcycle #04)';
+        order.delivery_status = 'assigned';
+        renderAdminBoard();
+        alert(`Assigned rider John Courier to shipment ${code}`);
+      }
+    }
+
+    // --- RIDER CONSOLE LOGIC ---
+    function renderRiderPortal() {
+      const container = document.getElementById('rider-delivery-cards');
+      const riderOrders = mockOrders.filter(o => o.delivery_status !== 'unassigned');
+
+      if (riderOrders.length === 0) {
+        container.innerHTML = '<div class="bg-white p-8 rounded-2xl text-center text-sm text-stone-400 border border-stone-200">No active delivery packages assigned currently.</div>';
+        return;
+      }
+
+      container.innerHTML = riderOrders.map(o => `
+        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-mono font-bold text-amber-700">${o.tracking_code}</span>
+              <h4 class="font-bold text-base text-stone-800">${o.recipient_name}</h4>
+              <p class="text-xs text-stone-500"><i class="fa-solid fa-phone"></i> ${o.recipient_phone}</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.delivery_status}</span>
+          </div>
+
+          <div class="bg-stone-50 p-3 rounded-xl text-xs space-y-1 border border-stone-100">
+            <p><strong class="text-stone-700">Delivery Address:</strong> ${o.shipping_address}</p>
+            <p><strong class="text-stone-700">Cake Packaging Note:</strong> ${o.notes || 'Fragile bakery package'}</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            ${o.delivery_status === 'assigned' ? `
+              <button onclick="updateRiderStatus('${o.tracking_code}', 'in_transit')" class="col-span-2 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2">
+                <i class="fa-solid fa-box-open"></i> Picked Up & In Transit
+              </button>
+            ` : o.delivery_status === 'in_transit' ? `
+              <a href="https://maps.google.com/?q=${encodeURIComponent(o.shipping_address)}" target="_blank" class="py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 border border-stone-200">
+                <i class="fa-solid fa-location-arrow text-amber-600"></i> Open Maps
+              </a>
+              <button onclick="updateRiderStatus('${o.tracking_code}', 'delivered')" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-circle-check"></i> Complete Dropoff
+              </button>
+            ` : `
+              <div class="col-span-2 text-center py-2 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-xl">
+                <i class="fa-solid fa-check-double"></i> Delivered Successfully
+              </div>
+            `}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateRiderStatus(code, newStatus) {
+      const order = mockOrders.find(o => o.tracking_code === code);
+      if (order) {
+        order.delivery_status = newStatus;
+        renderRiderPortal();
+      }
+    }
+
+    // Initialize Storefront on page load
+    renderProducts();
+  </script>
+</body>
+</html>
