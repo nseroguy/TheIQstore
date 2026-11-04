@@ -3,601 +3,608 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The IQ Bakery & Confectionery | Dispatch & Tracking</title>
+  <title>The IQ Bakery & Confectionery</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-serif-title { font-family: 'Playfair Display', serif; }
-    .active-nav-tab { background-color: #f59e0b; color: #ffffff; }
   </style>
 </head>
-<body class="bg-amber-50/40 text-stone-800 min-h-screen flex flex-col">
+<body class="bg-stone-50 text-stone-800 min-h-screen flex flex-col">
 
-  <!-- TOP ROLE SWITCHER NAVBAR -->
+  <!-- TOP HEADER & PORTAL NAVIGATION -->
   <header class="bg-stone-900 text-stone-100 shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center space-x-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+      <div onclick="showSection('customer-store')" class="flex items-center space-x-3 cursor-pointer">
         <span class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-stone-900 font-bold text-xl shadow">
           <i class="fa-solid fa-cake-candles"></i>
         </span>
         <div>
           <h1 class="font-serif-title text-xl font-bold tracking-tight text-amber-100">The IQ Bakery</h1>
-          <p class="text-xs text-amber-400 font-medium">Artisanal Confectionery & Swift Dispatch</p>
+          <p class="text-[11px] text-amber-400 font-medium">Fine Confectionery & Dispatch</p>
         </div>
       </div>
 
-      <!-- Module Navigation Switcher -->
-      <nav class="flex items-center space-x-1 sm:space-x-2 bg-stone-800 p-1.5 rounded-xl border border-stone-700 text-xs sm:text-sm font-medium">
-        <button onclick="switchView('store')" id="tab-store" class="active-nav-tab px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-store"></i> <span>Customer Store</span>
-        </button>
-        <button onclick="switchView('tracking')" id="tab-tracking" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-route"></i> <span>Live Tracker</span>
-        </button>
-        <button onclick="switchView('admin')" id="tab-admin" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-kitchen-set"></i> <span>Bakery Dispatch</span>
-        </button>
-        <button onclick="switchView('rider')" id="tab-rider" class="px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-motorcycle"></i> <span>Rider Portal</span>
-        </button>
-      </nav>
+      <!-- Right Portal Links -->
+      <div id="auth-nav-area" class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+        <!-- Injected by checkAuthState() -->
+      </div>
     </div>
   </header>
 
-  <!-- MAIN CONTAINER -->
+  <!-- MAIN SECTIONS CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- 1. CUSTOMER STORE & CART SECTION -->
-    <section id="view-store" class="space-y-8">
-      <!-- Hero Banner -->
-      <div class="relative rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 overflow-hidden shadow-xl">
-        <div class="relative z-10 max-w-2xl space-y-4">
-          <span class="inline-block px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold tracking-wider uppercase border border-amber-400/30">Fresh From The Oven</span>
-          <h2 class="font-serif-title text-3xl sm:text-5xl font-bold leading-tight">Freshly Baked Cakes, Pastries & Desserts</h2>
-          <p class="text-amber-100/90 text-sm sm:text-base">Order custom celebration cakes and handcrafted confections with live rider tracking directly to your door.</p>
+    <!-- ========================================== -->
+    <!-- 1. CUSTOMER STOREFRONT & TRACKER          -->
+    <!-- ========================================== -->
+    <div id="sec-customer-store" class="space-y-8">
+      <div class="rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 shadow-xl">
+        <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold uppercase">Fresh Batches</span>
+        <h2 class="font-serif-title text-3xl sm:text-5xl font-bold mt-2">Artisan Cakes & Sweet Delights</h2>
+        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes with real-time temperature-safe dispatch directly to your doorstep.</p>
+      </div>
+
+      <!-- Tracking lookup bar -->
+      <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col sm:flex-row gap-2">
+        <input type="text" id="cust-track-code" placeholder="Enter Tracking Code (e.g. IQ-TEST88)" class="flex-grow px-4 py-2 text-sm border border-stone-200 rounded-xl font-mono uppercase focus:ring-2 focus:ring-amber-500 outline-none" />
+        <button onclick="lookupTracking()" class="px-6 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl hover:bg-stone-800 transition">Track Parcel</button>
+      </div>
+
+      <!-- Live Tracking Result Modal/Card -->
+      <div id="tracking-result-box" class="hidden bg-white p-6 rounded-2xl border border-amber-200 shadow-md space-y-4">
+        <div class="flex justify-between items-center border-b border-stone-100 pb-3">
+          <h3 class="font-bold text-stone-900 text-lg">Delivery Status: <span id="track-status" class="text-amber-600 font-mono"></span></h3>
+          <button onclick="document.getElementById('tracking-result-box').classList.add('hidden')" class="text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="absolute -right-12 -bottom-12 opacity-15 text-stone-100 text-9xl pointer-events-none">
-          <i class="fa-solid fa-cookie-bite"></i>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div><p class="text-stone-400">Tracking Code:</p><p id="track-code-val" class="font-mono font-bold text-stone-800"></p></div>
+          <div><p class="text-stone-400">Destination:</p><p id="track-addr-val" class="font-semibold text-stone-800"></p></div>
+          <div><p class="text-stone-400">Courier:</p><p id="track-rider-val" class="font-semibold text-stone-800"></p></div>
         </div>
       </div>
 
-      <!-- Product Catalog & Cart Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        <!-- Products Column -->
+      <!-- Product Catalog & Cart -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 space-y-6">
-          <div class="flex items-center justify-between border-b border-stone-200 pb-3">
-            <h3 class="text-xl font-bold text-stone-900 font-serif-title">Today's Fresh Batch</h3>
-            <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-full">Same-Day Delivery</span>
-          </div>
-
-          <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <!-- Dynamic products injected by JS -->
-          </div>
+          <h3 class="font-serif-title text-xl font-bold text-stone-900">Today's Specialties</h3>
+          <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
         </div>
 
-        <!-- Cart & Checkout Column -->
-        <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm sticky top-24 space-y-6">
-          <div class="flex items-center justify-between border-b border-stone-100 pb-3">
-            <h3 class="font-bold text-lg text-stone-900 flex items-center gap-2">
-              <i class="fa-solid fa-basket-shopping text-amber-600"></i> Your Basket
-            </h3>
-            <span id="cart-count-badge" class="bg-stone-100 text-stone-700 text-xs px-2 py-0.5 rounded-full font-bold">0 items</span>
+        <!-- Cart / Checkout -->
+        <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-lg text-stone-900 flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-amber-600"></i> Your Basket</h3>
+          <div id="cart-list" class="divide-y divide-stone-100 text-xs max-h-56 overflow-y-auto"></div>
+          <div class="border-t border-stone-100 pt-3 text-xs space-y-1">
+            <div class="flex justify-between"><span>Subtotal:</span><span id="cart-subtotal" class="font-bold">$0.00</span></div>
+            <div class="flex justify-between text-stone-900 font-bold text-sm"><span>Total Due:</span><span id="cart-total">$0.00</span></div>
           </div>
-
-          <div id="cart-items" class="divide-y divide-stone-100 max-h-60 overflow-y-auto space-y-3">
-            <p class="text-sm text-stone-400 text-center py-6">Your confectionery cart is empty.</p>
-          </div>
-
-          <!-- Checkout Form -->
-          <form id="checkout-form" onsubmit="handleCheckout(event)" class="space-y-4 pt-2 border-t border-stone-100">
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 mb-1">Recipient Name</label>
-              <input type="text" id="cust-name" required placeholder="e.g. Alice Walker" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 mb-1">Phone Number (For Rider Contact)</label>
-              <input type="tel" id="cust-phone" required placeholder="e.g. +256 700 123456" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500" />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 mb-1">Delivery Address</label>
-              <textarea id="cust-address" required rows="2" placeholder="e.g. Plot 14 Kampala Road, Suite 3B" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-stone-600 mb-1">Cake Inscription / Special Instructions</label>
-              <input type="text" id="cust-notes" placeholder="e.g. 'Happy 30th Birthday Brian!'" class="w-full text-sm px-3 py-2 rounded-xl border border-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500" />
-            </div>
-
-            <!-- Price Breakdown -->
-            <div class="bg-amber-50/70 p-3.5 rounded-xl space-y-1 text-xs">
-              <div class="flex justify-between text-stone-600"><span>Confectionery Total:</span><span id="summary-subtotal" class="font-semibold">$0.00</span></div>
-              <div class="flex justify-between text-stone-600"><span>Courier Delivery:</span><span class="font-semibold">$4.50</span></div>
-              <div class="flex justify-between text-stone-900 font-bold text-sm pt-1 border-t border-amber-200/60"><span>Total Due:</span><span id="summary-total">$4.50</span></div>
-            </div>
-
-            <button type="submit" id="btn-submit-order" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
-              <i class="fa-solid fa-lock"></i> <span>Place Order & Dispatch</span>
-            </button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. CUSTOMER LIVE TRACKING SECTION -->
-    <section id="view-tracking" class="hidden max-w-3xl mx-auto space-y-6">
-      <div class="bg-white rounded-2xl border border-stone-200 p-6 sm:p-8 shadow-sm space-y-6">
-        <div>
-          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Track Your Sweet Delivery</h2>
-          <p class="text-sm text-stone-500">Monitor fresh preparation, bakery boxing, and real-time courier arrival.</p>
-        </div>
-
-        <!-- Search Bar -->
-        <div class="flex gap-2">
-          <input type="text" id="track-input" placeholder="Enter Tracking Code (e.g. IQ-TEST88)" class="flex-grow px-4 py-2.5 rounded-xl border border-stone-200 uppercase font-mono text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          <button onclick="fetchTrackingData(document.getElementById('track-input').value.trim())" class="px-5 py-2.5 bg-stone-900 hover:bg-stone-800 text-white text-sm font-semibold rounded-xl flex items-center gap-2">
-            <i class="fa-solid fa-magnifying-glass"></i> Track
+          <button onclick="handleCustomerCheckout()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition">
+            Proceed to Checkout
           </button>
         </div>
-
-        <!-- Tracking Visual Card -->
-        <div id="tracking-card" class="hidden space-y-8 pt-4 border-t border-stone-100">
-          <!-- Metadata header -->
-          <div class="flex flex-wrap items-center justify-between gap-4 bg-stone-50 p-4 rounded-xl border border-stone-100">
-            <div>
-              <span class="text-xs uppercase tracking-wider text-stone-400 font-mono">Order Tracking ID</span>
-              <p id="track-code-display" class="font-mono font-bold text-lg text-amber-700">IQ-000000</p>
-            </div>
-            <div>
-              <span class="text-xs uppercase tracking-wider text-stone-400">Current Phase</span>
-              <p id="track-status-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">Processing</p>
-            </div>
-            <div>
-              <span class="text-xs uppercase tracking-wider text-stone-400">Est. Arrival</span>
-              <p id="track-eta" class="text-sm font-semibold text-stone-800">Within 45 mins</p>
-            </div>
-          </div>
-
-          <!-- Milestones Progress Timeline -->
-          <div class="relative pl-6 sm:pl-8 border-l-2 border-amber-200 space-y-8 my-6 ml-3">
-            <!-- Step 1: Placed -->
-            <div id="step-placed" class="relative group">
-              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-amber-500 text-white flex items-center justify-center text-xs shadow">
-                <i class="fa-solid fa-receipt"></i>
-              </span>
-              <h4 class="font-bold text-stone-900 text-sm">Order Placed & Confirmed</h4>
-              <p class="text-xs text-stone-500">Order received in kitchen queue.</p>
-            </div>
-            <!-- Step 2: Preparing -->
-            <div id="step-baking" class="relative group">
-              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
-                <i class="fa-solid fa-fire-burner"></i>
-              </span>
-              <h4 class="font-bold text-stone-900 text-sm">Oven Baking & Decoration</h4>
-              <p class="text-xs text-stone-500">Master bakers decorating and safely boxing packaging.</p>
-            </div>
-            <!-- Step 3: Assigned -->
-            <div id="step-assigned" class="relative group">
-              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
-                <i class="fa-solid fa-user-check"></i>
-              </span>
-              <h4 class="font-bold text-stone-900 text-sm">Courier Assigned</h4>
-              <p class="text-xs text-stone-500">Bakery delivery rider assigned to pickup.</p>
-            </div>
-            <!-- Step 4: In Transit -->
-            <div id="step-transit" class="relative group">
-              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
-                <i class="fa-solid fa-motorcycle"></i>
-              </span>
-              <h4 class="font-bold text-stone-900 text-sm">Rider Out For Delivery</h4>
-              <p class="text-xs text-stone-500">Carefully transporting in a temperature-controlled thermal bag.</p>
-            </div>
-            <!-- Step 5: Delivered -->
-            <div id="step-delivered" class="relative group">
-              <span class="absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-500 flex items-center justify-center text-xs shadow">
-                <i class="fa-solid fa-check"></i>
-              </span>
-              <h4 class="font-bold text-stone-900 text-sm">Handed Over & Enjoyed</h4>
-              <p class="text-xs text-stone-500">Delivered directly to recipient.</p>
-            </div>
-          </div>
-
-          <!-- Recipient & Notes Box -->
-          <div class="bg-amber-50/50 p-4 rounded-xl text-xs space-y-1.5 border border-amber-100">
-            <p><strong class="text-stone-700">Delivery Destination:</strong> <span id="track-address" class="text-stone-600">-</span></p>
-            <p><strong class="text-stone-700">Recipient:</strong> <span id="track-recipient" class="text-stone-600">-</span></p>
-            <p><strong class="text-stone-700">Special Cake Note:</strong> <span id="track-notes" class="text-stone-600">-</span></p>
-          </div>
-        </div>
       </div>
-    </section>
+    </div>
 
-    <!-- 3. BAKERY ADMIN & KITCHEN DISPATCH -->
-    <section id="view-admin" class="hidden space-y-6">
-      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 pb-4">
+    <!-- ========================================== -->
+    <!-- 2. AUTHENTICATION PAGES                    -->
+    <!-- ========================================== -->
+
+    <!-- Customer Login & Signup -->
+    <div id="sec-customer-auth" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+      <div class="text-center">
+        <h2 id="cust-auth-title" class="text-2xl font-bold font-serif-title text-stone-900">Customer Login</h2>
+        <p class="text-xs text-stone-500 mt-1">Access your cake orders and delivery history</p>
+      </div>
+      <form id="cust-auth-form" onsubmit="submitCustomerAuth(event)" class="space-y-4 text-xs">
+        <div id="field-signup-name" class="hidden">
+          <label class="block font-semibold text-stone-600 mb-1">Full Name</label>
+          <input type="text" id="cust-name-input" class="w-full px-3 py-2 border rounded-xl" placeholder="Alice Walker" />
+        </div>
         <div>
-          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch & Order Desk</h2>
-          <p class="text-sm text-stone-500">Manage incoming confectionery requests and assign riders.</p>
+          <label class="block font-semibold text-stone-600 mb-1">Email Address</label>
+          <input type="email" id="cust-email-input" required class="w-full px-3 py-2 border rounded-xl" placeholder="alice@example.com" />
         </div>
-        <button onclick="renderAdminBoard()" class="px-4 py-2 bg-stone-900 text-white rounded-xl text-xs font-semibold hover:bg-stone-800 transition">
-          <i class="fa-solid fa-arrows-rotate"></i> Refresh Queue
-        </button>
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Password</label>
+          <input type="password" id="cust-pass-input" required class="w-full px-3 py-2 border rounded-xl" placeholder="••••••••" />
+        </div>
+        <button type="submit" id="cust-auth-btn" class="w-full py-2.5 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition">Sign In</button>
+      </form>
+      <div class="text-center text-xs">
+        <button onclick="toggleCustomerAuthMode()" id="cust-auth-toggle" class="text-amber-700 font-semibold hover:underline">Don't have an account? Sign Up</button>
       </div>
+    </div>
 
-      <!-- Live Dispatch Table -->
+    <!-- Dispatch Desk Login -->
+    <div id="sec-staff-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-xl bg-stone-900 text-amber-500 flex items-center justify-center mx-auto text-xl font-bold mb-2">
+          <i class="fa-solid fa-kitchen-set"></i>
+        </div>
+        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Login</h2>
+        <p class="text-xs text-stone-500 mt-1">Authorized bakery operations personnel only</p>
+      </div>
+      <form onsubmit="submitRoleLogin(event, 'staff')" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Staff Email</label>
+          <input type="email" id="staff-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="dispatch@theiqstore.com" />
+        </div>
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Password</label>
+          <input type="password" id="staff-pass" required class="w-full px-3 py-2 border rounded-xl" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition">Enter Kitchen Dispatch</button>
+      </form>
+      <p class="text-[11px] text-stone-400 text-center">Staff accounts are provisioned exclusively by the Bakery Admin.</p>
+    </div>
+
+    <!-- Rider / Courier Login -->
+    <div id="sec-rider-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-xl bg-amber-500 text-stone-900 flex items-center justify-center mx-auto text-xl font-bold mb-2">
+          <i class="fa-solid fa-motorcycle"></i>
+        </div>
+        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Rider Delivery Portal</h2>
+        <p class="text-xs text-stone-500 mt-1">Confectionery courier login</p>
+      </div>
+      <form onsubmit="submitRoleLogin(event, 'rider')" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Rider Email</label>
+          <input type="email" id="rider-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="driver@theiqstore.com" />
+        </div>
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Password</label>
+          <input type="password" id="rider-pass" required class="w-full px-3 py-2 border rounded-xl" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition">Login to Courier Duty</button>
+      </form>
+      <p class="text-[11px] text-stone-400 text-center">Rider access accounts are provisioned exclusively by the Bakery Admin.</p>
+    </div>
+
+    <!-- Admin Master Login -->
+    <div id="sec-admin-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-xl bg-stone-900 text-white flex items-center justify-center mx-auto text-xl font-bold mb-2">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Admin Login</h2>
+        <p class="text-xs text-stone-500 mt-1">Master store management & employee provisioning</p>
+      </div>
+      <form onsubmit="submitRoleLogin(event, 'admin')" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Admin Email</label>
+          <input type="email" id="admin-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="admin@theiqstore.com" />
+        </div>
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Password</label>
+          <input type="password" id="admin-pass" required class="w-full px-3 py-2 border rounded-xl" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition">Authenticate Admin</button>
+      </form>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. ROLE-SECURED DASHBOARDS                -->
+    <!-- ========================================== -->
+
+    <!-- Dispatch Desk Portal -->
+    <div id="sec-dispatch-dashboard" class="hidden space-y-6">
+      <div class="flex justify-between items-center border-b pb-4">
+        <div>
+          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Queue</h2>
+          <p class="text-xs text-stone-500">Assign incoming orders to available couriers</p>
+        </div>
+        <button onclick="loadDispatchQueue()" class="px-4 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl">Refresh Queue</button>
+      </div>
       <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs sm:text-sm">
-            <thead class="bg-stone-50 text-stone-600 border-b border-stone-200 uppercase font-semibold">
-              <tr>
-                <th class="p-3.5">Tracking / Order</th>
-                <th class="p-3.5">Customer & Items</th>
-                <th class="p-3.5">Destination</th>
-                <th class="p-3.5">Status</th>
-                <th class="p-3.5">Assign Courier</th>
-                <th class="p-3.5 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="admin-orders-tbody" class="divide-y divide-stone-100">
-              <!-- Rendered via JS -->
-            </tbody>
-          </table>
-        </div>
+        <table class="w-full text-left text-xs">
+          <thead class="bg-stone-50 text-stone-600 border-b">
+            <tr>
+              <th class="p-3">Tracking</th>
+              <th class="p-3">Customer & Destination</th>
+              <th class="p-3">Status</th>
+              <th class="p-3">Assign Courier</th>
+            </tr>
+          </thead>
+          <tbody id="dispatch-table-body" class="divide-y divide-stone-100"></tbody>
+        </table>
       </div>
-    </section>
+    </div>
 
-    <!-- 4. RIDER / COURIER MOBILE CONSOLE -->
-    <section id="view-rider" class="hidden max-w-2xl mx-auto space-y-6">
-      <div class="bg-stone-900 text-stone-100 p-6 rounded-2xl shadow-lg flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-xl bg-amber-500 text-stone-900 flex items-center justify-center text-xl font-bold">
-            <i class="fa-solid fa-helmet-safety"></i>
+    <!-- Rider Delivery Portal -->
+    <div id="sec-rider-dashboard" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="bg-stone-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
+        <div>
+          <h3 class="font-bold text-lg" id="rider-display-name">Active Rider</h3>
+          <p class="text-xs text-amber-400 font-mono">Confectionery Courier Unit</p>
+        </div>
+        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-xs rounded-full font-bold">On Duty</span>
+      </div>
+      <div class="space-y-4">
+        <h4 class="font-bold text-stone-900 font-serif-title text-base">Your Assigned Drops</h4>
+        <div id="rider-tasks-container" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- Admin Master Dashboard (Includes Staff & Rider Provisioning) -->
+    <div id="sec-admin-dashboard" class="hidden space-y-8">
+      <div class="border-b pb-4">
+        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
+        <p class="text-xs text-stone-500">Provision Dispatch Staff and Delivery Riders</p>
+      </div>
+
+      <!-- Add Employee Box -->
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm max-w-xl space-y-4">
+        <h3 class="font-bold text-stone-900 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-amber-600"></i> Provision Staff or Rider
+        </h3>
+        <form onsubmit="handleCreateEmployee(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-stone-600 mb-1">Account Role</label>
+            <select id="emp-role" class="w-full px-3 py-2 border rounded-xl">
+              <option value="driver">Delivery Rider (Courier)</option>
+              <option value="staff">Kitchen Dispatch Staff</option>
+            </select>
           </div>
           <div>
-            <h3 class="font-bold text-lg">Rider Portal: John Courier</h3>
-            <p class="text-xs text-amber-400 font-mono">Motorcycle Unit #04 • Active Duty</p>
+            <label class="block font-semibold text-stone-600 mb-1">Full Name</label>
+            <input type="text" id="emp-name" required placeholder="John Courier" class="w-full px-3 py-2 border rounded-xl" />
           </div>
-        </div>
-        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs rounded-full font-bold">Online</span>
+          <div>
+            <label class="block font-semibold text-stone-600 mb-1">Email</label>
+            <input type="email" id="emp-email" required placeholder="courier4@theiqstore.com" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <div>
+            <label class="block font-semibold text-stone-600 mb-1">Temporary Password</label>
+            <input type="password" id="emp-pass" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <div>
+            <label class="block font-semibold text-stone-600 mb-1">Vehicle / Unit Details (Optional for Riders)</label>
+            <input type="text" id="emp-vehicle" placeholder="Box Motorcycle #04" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition">
+            Create User Account
+          </button>
+        </form>
       </div>
-
-      <div class="space-y-4">
-        <h4 class="font-bold text-stone-900 font-serif-title text-lg">Assigned Delivery Shipments</h4>
-        <div id="rider-delivery-cards" class="space-y-4">
-          <!-- Rendered via JS -->
-        </div>
-      </div>
-    </section>
+    </div>
 
   </main>
 
-  <footer class="bg-stone-900 text-stone-400 text-xs py-6 border-t border-stone-800 text-center mt-12">
-    <p>© 2026 The IQ Bakery & Confectionery Ltd. Powered by Render & PostgreSQL.</p>
-  </footer>
-
   <script>
-    // --- BAKERY CATALOG DATA ---
-    const BAKERY_CATALOG = [
-      { id: 'prod_1', name: 'Belgian Dark Chocolate Cake (1kg)', price: 28.50, desc: 'Rich 70% cocoa sponge layered with silken ganache.', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
-      { id: 'prod_2', name: 'Madagascar Vanilla Dream Cake (1kg)', price: 24.00, desc: 'Fluffy sponge with bourbon vanilla cream & sugar flowers.', img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=500' },
-      { id: 'prod_3', name: 'Artisan Macaron Gift Box (12 pcs)', price: 16.50, desc: 'Assorted pistachio, salted caramel, and raspberry macarons.', img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' },
-      { id: 'prod_4', name: 'Butter Croissant Box (6 pcs)', price: 12.00, desc: 'Flaky 100% French cultured butter croissants fresh baked.', img: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=500' }
-    ];
-
-    // IN-MEMORY SHARED STORE STATE (Synced with API or local fallback)
+    const API_BASE = window.location.origin;
+    let currentUser = JSON.parse(localStorage.getItem('iq_user') || 'null');
+    let authToken = localStorage.getItem('iq_token') || null;
     let cart = {};
-    let mockOrders = [
-      {
-        tracking_code: 'IQ-TEST88',
-        recipient_name: 'Alice Customer',
-        recipient_phone: '+256700000003',
-        shipping_address: 'Plot 14 Kampala Road, Kampala',
-        notes: 'Happy Birthday Alice! - Gold candles included',
-        items: 'Belgian Dark Chocolate Cake (1kg) x1',
-        total_amount: 33.00,
-        delivery_status: 'in_transit',
-        driver_name: 'John Courier'
-      },
-      {
-        tracking_code: 'IQ-B8920',
-        recipient_name: 'David Kasule',
-        recipient_phone: '+256700000088',
-        shipping_address: 'Acacia Mall, Kisementi, Floor 2',
-        notes: 'Leave at front desk reception',
-        items: 'Artisan Macaron Gift Box x2',
-        total_amount: 37.50,
-        delivery_status: 'unassigned',
-        driver_name: null
-      }
+
+    const BAKERY_ITEMS = [
+      { id: 'cake-1', name: 'Belgian Chocolate Truffle Cake (1kg)', price: 30.00, img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
+      { id: 'cake-2', name: 'Madagascar Bourbon Vanilla (1kg)', price: 26.00, img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=500' },
+      { id: 'cake-3', name: 'French Macaron Gift Collection (12pcs)', price: 18.00, img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' }
     ];
 
-    // --- NAVIGATION LOGIC ---
-    function switchView(viewName) {
-      ['store', 'tracking', 'admin', 'rider'].forEach(v => {
-        document.getElementById(`view-${v}`).classList.add('hidden');
-        document.getElementById(`tab-${v}`).className = "px-3 py-1.5 rounded-lg text-stone-300 hover:text-white transition-all flex items-center gap-1.5";
-      });
-      document.getElementById(`view-${viewName}`).classList.remove('hidden');
-      document.getElementById(`tab-${viewName}`).className = "active-nav-tab px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5";
+    // --- NAVIGATION CONTROLLER ---
+    function showSection(sectionId) {
+      const sections = [
+        'customer-store', 'customer-auth', 'staff-login', 
+        'rider-login', 'admin-login', 'dispatch-dashboard', 
+        'rider-dashboard', 'admin-dashboard'
+      ];
+      sections.forEach(s => document.getElementById(`sec-${s}`).classList.add('hidden'));
+      document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
 
-      if (viewName === 'admin') renderAdminBoard();
-      if (viewName === 'rider') renderRiderPortal();
+      if (sectionId === 'dispatch-dashboard') loadDispatchQueue();
+      if (sectionId === 'rider-dashboard') loadRiderTasks();
     }
 
-    // --- STOREFRONT & CART LOGIC ---
-    function renderProducts() {
-      const container = document.getElementById('products-grid');
-      container.innerHTML = BAKERY_CATALOG.map(p => `
-        <div class="bg-white rounded-2xl overflow-hidden border border-stone-200/80 shadow-sm flex flex-col justify-between hover:shadow-md transition">
-          <img src="${p.img}" alt="${p.name}" class="h-44 w-full object-cover" />
-          <div class="p-5 flex-grow flex flex-col justify-between space-y-3">
-            <div>
-              <div class="flex justify-between items-start">
-                <h4 class="font-bold text-stone-900 text-base font-serif-title">${p.name}</h4>
-                <span class="text-amber-700 font-bold font-mono text-sm">$${p.price.toFixed(2)}</span>
-              </div>
-              <p class="text-xs text-stone-500 mt-1">${p.desc}</p>
-            </div>
-            <button onclick="addToCart('${p.id}')" class="w-full py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold rounded-xl border border-amber-200 transition flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-plus"></i> Add to Box
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function addToCart(prodId) {
-      cart[prodId] = (cart[prodId] || 0) + 1;
-      updateCartUI();
-    }
-
-    function updateCartUI() {
-      const itemsContainer = document.getElementById('cart-items');
-      const itemKeys = Object.keys(cart);
-      let subtotal = 0;
-      let totalCount = 0;
-
-      if (itemKeys.length === 0) {
-        itemsContainer.innerHTML = '<p class="text-xs text-stone-400 text-center py-6">Your confectionery cart is empty.</p>';
+    function checkAuthState() {
+      const navArea = document.getElementById('auth-nav-area');
+      if (!currentUser || !authToken) {
+        navArea.innerHTML = `
+          <button onclick="showSection('customer-auth')" class="text-stone-300 hover:text-white">Customer Sign In</button>
+          <span class="text-stone-600">|</span>
+          <button onclick="showSection('staff-login')" class="text-stone-300 hover:text-white">Staff Desk</button>
+          <span class="text-stone-600">|</span>
+          <button onclick="showSection('rider-login')" class="text-stone-300 hover:text-white">Rider</button>
+          <span class="text-stone-600">|</span>
+          <button onclick="showSection('admin-login')" class="text-amber-400 hover:text-amber-300 font-bold">Admin</button>
+        `;
       } else {
-        itemsContainer.innerHTML = itemKeys.map(id => {
-          const prod = BAKERY_CATALOG.find(p => p.id === id);
-          const qty = cart[id];
-          const itemTotal = prod.price * qty;
-          subtotal += itemTotal;
-          totalCount += qty;
-          return `
-            <div class="flex items-center justify-between text-xs py-2">
-              <div>
-                <p class="font-semibold text-stone-800">${prod.name}</p>
-                <p class="text-stone-400 font-mono">$${prod.price.toFixed(2)} × ${qty}</p>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-stone-700 font-mono">$${itemTotal.toFixed(2)}</span>
-                <button onclick="removeFromCart('${id}')" class="text-stone-400 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
-              </div>
-            </div>
-          `;
-        }).join('');
+        let roleBadge = `<span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-xs uppercase font-mono">${currentUser.role}</span>`;
+        let dashboardBtn = '';
+        if (currentUser.role === 'admin') dashboardBtn = `<button onclick="showSection('admin-dashboard')" class="text-amber-400 font-bold">Admin Console</button>`;
+        if (currentUser.role === 'staff') dashboardBtn = `<button onclick="showSection('dispatch-dashboard')" class="text-amber-400 font-bold">Kitchen Queue</button>`;
+        if (currentUser.role === 'driver') dashboardBtn = `<button onclick="showSection('rider-dashboard')" class="text-amber-400 font-bold">My Deliveries</button>`;
+
+        navArea.innerHTML = `
+          <span class="text-stone-300">${currentUser.name} (${roleBadge})</span>
+          ${dashboardBtn}
+          <button onclick="handleLogout()" class="text-stone-400 hover:text-red-400 ml-2"><i class="fa-solid fa-power-off"></i></button>
+        `;
       }
-
-      document.getElementById('cart-count-badge').innerText = `${totalCount} items`;
-      document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-      document.getElementById('summary-total').innerText = `$${(subtotal > 0 ? subtotal + 4.50 : 0).toFixed(2)}`;
     }
 
-    function removeFromCart(id) {
-      delete cart[id];
-      updateCartUI();
+    function handleLogout() {
+      localStorage.removeItem('iq_token');
+      localStorage.removeItem('iq_user');
+      currentUser = null;
+      authToken = null;
+      checkAuthState();
+      showSection('customer-store');
     }
 
-    async function handleCheckout(e) {
+    // --- AUTHENTICATION FLOWS ---
+    let isCustomerSignUp = false;
+    function toggleCustomerAuthMode() {
+      isCustomerSignUp = !isCustomerSignUp;
+      document.getElementById('cust-auth-title').innerText = isCustomerSignUp ? 'Create Customer Account' : 'Customer Login';
+      document.getElementById('cust-auth-btn').innerText = isCustomerSignUp ? 'Sign Up' : 'Sign In';
+      document.getElementById('field-signup-name').classList.toggle('hidden', !isCustomerSignUp);
+      document.getElementById('cust-auth-toggle').innerText = isCustomerSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up";
+    }
+
+    async function submitCustomerAuth(e) {
       e.preventDefault();
-      if (Object.keys(cart).length === 0) {
-        alert("Please add at least one bakery item to your basket.");
-        return;
-      }
+      const email = document.getElementById('cust-email-input').value;
+      const password = document.getElementById('cust-pass-input').value;
+      const endpoint = isCustomerSignUp ? '/api/v1/auth/customer/signup' : '/api/v1/auth/customer/login';
+      const body = isCustomerSignUp 
+        ? { email, password, name: document.getElementById('cust-name-input').value, phone: '' }
+        : { email, password };
 
-      const orderPayload = {
-        recipient_name: document.getElementById('cust-name').value,
-        recipient_phone: document.getElementById('cust-phone').value,
-        shipping_address: document.getElementById('cust-address').value,
-        notes: document.getElementById('cust-notes').value || 'Handle confectionery with care',
-        items: Object.keys(cart).map(id => `${BAKERY_CATALOG.find(p => p.id === id).name} x${cart[id]}`).join(', '),
-        total_amount: parseFloat(document.getElementById('summary-total').innerText.replace('$', ''))
-      };
-
-      // Try hitting Render backend or fallback to local memory
-      let trackingCode = 'IQ-B' + Math.floor(1000 + Math.random() * 9000);
       try {
-        const res = await fetch('https://theiqstore.onrender.com/api/v1/deliveries', {
+        const res = await fetch(`${API_BASE}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderPayload)
+          body: JSON.stringify(body)
         });
-        if (res.ok) {
-          const data = await res.json();
-          trackingCode = data.delivery.tracking_code;
-        }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        saveAuthSession(data.token, data.user);
+        showSection('customer-store');
       } catch (err) {
-        console.warn("Using local memory store fallback:", err);
+        alert(err.message);
       }
-
-      const newOrder = {
-        ...orderPayload,
-        tracking_code: trackingCode,
-        delivery_status: 'unassigned',
-        driver_name: null
-      };
-      mockOrders.unshift(newOrder);
-
-      // Clear Cart & Jump to Tracking
-      cart = {};
-      updateCartUI();
-      document.getElementById('checkout-form').reset();
-      switchView('tracking');
-      document.getElementById('track-input').value = trackingCode;
-      fetchTrackingData(trackingCode);
     }
 
-    // --- TRACKING LOGIC ---
-    async function fetchTrackingData(code) {
-      if (!code) return;
-      document.getElementById('tracking-card').classList.remove('hidden');
+    async function submitRoleLogin(e, role) {
+      e.preventDefault();
+      const email = document.getElementById(`${role}-email`).value;
+      const password = document.getElementById(`${role}-pass`).value;
 
-      // Check remote Render API first, then local mock store
-      let order = null;
       try {
-        const res = await fetch(`https://theiqstore.onrender.com/api/v1/deliveries/track/${code}`);
-        if (res.ok) {
-          const data = await res.json();
-          order = data.tracking;
-        }
-      } catch (e) {
-        console.warn("Remote lookup timed out, querying local orders...");
+        const res = await fetch(`${API_BASE}/api/v1/auth/${role}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        saveAuthSession(data.token, data.user);
+        if (data.user.role === 'admin') showSection('admin-dashboard');
+        else if (data.user.role === 'staff') showSection('dispatch-dashboard');
+        else if (data.user.role === 'driver') showSection('rider-dashboard');
+      } catch (err) {
+        alert(err.message);
       }
+    }
 
-      if (!order) {
-        order = mockOrders.find(o => o.tracking_code.toUpperCase() === code.toUpperCase());
-      }
+    function saveAuthSession(token, user) {
+      localStorage.setItem('iq_token', token);
+      localStorage.setItem('iq_user', JSON.stringify(user));
+      authToken = token;
+      currentUser = user;
+      checkAuthState();
+    }
 
-      if (!order) {
-        alert("Tracking number not found. Try IQ-TEST88");
-        return;
-      }
-
-      document.getElementById('track-code-display').innerText = order.tracking_code;
-      document.getElementById('track-status-badge').innerText = order.delivery_status.replace('_', ' ').toUpperCase();
-      document.getElementById('track-address').innerText = order.shipping_address;
-      document.getElementById('track-recipient').innerText = `${order.recipient_name} (${order.recipient_phone})`;
-      document.getElementById('track-notes').innerText = order.notes || 'No custom inscription specified.';
-
-      // Update Milestones Colors
-      const steps = ['placed', 'baking', 'assigned', 'transit', 'delivered'];
-      const statusMap = {
-        'unassigned': 2,
-        'assigned': 3,
-        'picked_up': 4,
-        'in_transit': 4,
-        'delivered': 5
+    // --- ADMIN PROVISIONING OF STAFF & RIDERS ---
+    async function handleCreateEmployee(e) {
+      e.preventDefault();
+      const payload = {
+        role: document.getElementById('emp-role').value,
+        name: document.getElementById('emp-name').value,
+        email: document.getElementById('emp-email').value,
+        password: document.getElementById('emp-pass').value,
+        vehicle_info: document.getElementById('emp-vehicle').value
       };
 
-      const currentIdx = statusMap[order.delivery_status] || 1;
-      steps.forEach((step, idx) => {
-        const el = document.getElementById(`step-${step}`);
-        const iconSpan = el.querySelector('span');
-        if (idx + 1 < currentIdx) {
-          iconSpan.className = "absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs shadow";
-        } else if (idx + 1 === currentIdx) {
-          iconSpan.className = "absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-amber-500 text-white animate-pulse flex items-center justify-center text-xs shadow";
-        } else {
-          iconSpan.className = "absolute -left-[31px] sm:-left-[39px] top-0 w-8 h-8 rounded-full bg-stone-200 text-stone-400 flex items-center justify-center text-xs shadow";
-        }
-      });
-    }
+      try {
+        const res = await fetch(`${API_BASE}/api/v1/auth/admin/create-employee`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
-    // --- BAKERY ADMIN KITCHEN DISPATCH ---
-    function renderAdminBoard() {
-      const tbody = document.getElementById('admin-orders-tbody');
-      tbody.innerHTML = mockOrders.map(o => `
-        <tr class="hover:bg-stone-50 border-b border-stone-100">
-          <td class="p-3.5">
-            <span class="font-mono font-bold text-amber-700">${o.tracking_code}</span>
-            <p class="text-[11px] text-stone-400">$${o.total_amount ? o.total_amount.toFixed(2) : '30.00'}</p>
-          </td>
-          <td class="p-3.5">
-            <p class="font-semibold text-stone-800">${o.recipient_name}</p>
-            <p class="text-[11px] text-stone-500">${o.items || 'Dark Chocolate Cake'}</p>
-          </td>
-          <td class="p-3.5 text-stone-600 max-w-xs truncate">${o.shipping_address}</td>
-          <td class="p-3.5">
-            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${
-              o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' :
-              o.delivery_status === 'in_transit' ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'
-            }">${o.delivery_status}</span>
-          </td>
-          <td class="p-3.5">
-            <span class="text-xs text-stone-700 font-medium">${o.driver_name || '<em class="text-stone-400">Not Assigned</em>'}</span>
-          </td>
-          <td class="p-3.5 text-right space-x-1">
-            ${o.delivery_status === 'unassigned' ? `
-              <button onclick="adminAssignRider('${o.tracking_code}')" class="px-3 py-1 bg-amber-600 text-white rounded-lg text-xs font-semibold hover:bg-amber-700">Assign Courier</button>
-            ` : `
-              <span class="text-xs text-stone-400"><i class="fa-solid fa-check"></i> Dispatched</span>
-            `}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function adminAssignRider(code) {
-      const order = mockOrders.find(o => o.tracking_code === code);
-      if (order) {
-        order.driver_name = 'John Courier (Motorcycle #04)';
-        order.delivery_status = 'assigned';
-        renderAdminBoard();
-        alert(`Assigned rider John Courier to shipment ${code}`);
+        alert(data.message);
+        e.target.reset();
+      } catch (err) {
+        alert(err.message);
       }
+    }
+
+    // --- DISPATCH DESK LOGIC ---
+    async function loadDispatchQueue() {
+      const tbody = document.getElementById('dispatch-table-body');
+      try {
+        const [ordersRes, ridersRes] = await Promise.all([
+          fetch(`${API_BASE}/api/v1/deliveries/dispatch/queue`, { headers: { 'Authorization': `Bearer ${authToken}` } }),
+          fetch(`${API_BASE}/api/v1/auth/riders`, { headers: { 'Authorization': `Bearer ${authToken}` } })
+        ]);
+        const ordersData = await ordersRes.json();
+        const ridersData = await ridersRes.json();
+
+        const riders = ridersData.riders || [];
+        tbody.innerHTML = (ordersData.deliveries || []).map(o => `
+          <tr class="hover:bg-stone-50">
+            <td class="p-3 font-mono font-bold text-amber-700">${o.tracking_code}</td>
+            <td class="p-3">
+              <p class="font-bold text-stone-800">${o.recipient_name}</p>
+              <p class="text-stone-500">${o.shipping_address}</p>
+            </td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded font-bold ${o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.delivery_status}</span></td>
+            <td class="p-3">
+              ${o.driver_name ? `<span class="font-semibold text-stone-700">${o.driver_name}</span>` : `
+                <select onchange="assignRider('${o.tracking_code}', this.value)" class="border px-2 py-1 rounded text-xs">
+                  <option value="">-- Choose Rider --</option>
+                  ${riders.map(r => `<option value="${r.id}">${r.name} (${r.vehicle_info || 'Bike'})</option>`).join('')}
+                </select>
+              `}
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function assignRider(trackingCode, driverId) {
+      if (!driverId) return;
+      await fetch(`${API_BASE}/api/v1/deliveries/${trackingCode}/assign-rider`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+        body: JSON.stringify({ driver_id: driverId })
+      });
+      loadDispatchQueue();
     }
 
     // --- RIDER CONSOLE LOGIC ---
-    function renderRiderPortal() {
-      const container = document.getElementById('rider-delivery-cards');
-      const riderOrders = mockOrders.filter(o => o.delivery_status !== 'unassigned');
+    async function loadRiderTasks() {
+      const container = document.getElementById('rider-tasks-container');
+      try {
+        const res = await fetch(`${API_BASE}/api/v1/deliveries/rider/my-tasks`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        const tasks = data.tasks || [];
+        if (tasks.length === 0) {
+          container.innerHTML = '<p class="text-center text-xs text-stone-400 py-6">No pending delivery tasks assigned to you right now.</p>';
+          return;
+        }
 
-      if (riderOrders.length === 0) {
-        container.innerHTML = '<div class="bg-white p-8 rounded-2xl text-center text-sm text-stone-400 border border-stone-200">No active delivery packages assigned currently.</div>';
-        return;
-      }
-
-      container.innerHTML = riderOrders.map(o => `
-        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4">
-          <div class="flex justify-between items-start">
-            <div>
-              <span class="text-xs font-mono font-bold text-amber-700">${o.tracking_code}</span>
-              <h4 class="font-bold text-base text-stone-800">${o.recipient_name}</h4>
-              <p class="text-xs text-stone-500"><i class="fa-solid fa-phone"></i> ${o.recipient_phone}</p>
+        container.innerHTML = tasks.map(t => `
+          <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <div class="flex justify-between">
+              <span class="font-mono font-bold text-amber-700">${t.tracking_code}</span>
+              <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-bold text-xs">${t.delivery_status}</span>
             </div>
-            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.delivery_status}</span>
+            <p class="font-bold text-stone-800 text-sm">${t.recipient_name} (${t.recipient_phone})</p>
+            <p class="text-xs text-stone-500">${t.shipping_address}</p>
+            <div class="flex gap-2 pt-2">
+              ${t.delivery_status === 'assigned' ? `
+                <button onclick="updateRiderDrop('${t.tracking_code}', 'in_transit')" class="w-full py-2 bg-amber-600 text-white rounded-xl font-bold text-xs">Acknowledge Pickup</button>
+              ` : `
+                <button onclick="updateRiderDrop('${t.tracking_code}', 'delivered')" class="w-full py-2 bg-emerald-600 text-white rounded-xl font-bold text-xs">Mark Dropoff Complete</button>
+              `}
+            </div>
           </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+      }
+    }
 
-          <div class="bg-stone-50 p-3 rounded-xl text-xs space-y-1 border border-stone-100">
-            <p><strong class="text-stone-700">Delivery Address:</strong> ${o.shipping_address}</p>
-            <p><strong class="text-stone-700">Cake Packaging Note:</strong> ${o.notes || 'Fragile bakery package'}</p>
-          </div>
+    async function updateRiderDrop(trackingCode, status) {
+      await fetch(`${API_BASE}/api/v1/deliveries/rider/update-status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+        body: JSON.stringify({ tracking_code: trackingCode, status })
+      });
+      loadRiderTasks();
+    }
 
-          <div class="grid grid-cols-2 gap-2 pt-2">
-            ${o.delivery_status === 'assigned' ? `
-              <button onclick="updateRiderStatus('${o.tracking_code}', 'in_transit')" class="col-span-2 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2">
-                <i class="fa-solid fa-box-open"></i> Picked Up & In Transit
-              </button>
-            ` : o.delivery_status === 'in_transit' ? `
-              <a href="https://maps.google.com/?q=${encodeURIComponent(o.shipping_address)}" target="_blank" class="py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 border border-stone-200">
-                <i class="fa-solid fa-location-arrow text-amber-600"></i> Open Maps
-              </a>
-              <button onclick="updateRiderStatus('${o.tracking_code}', 'delivered')" class="py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-circle-check"></i> Complete Dropoff
-              </button>
-            ` : `
-              <div class="col-span-2 text-center py-2 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-xl">
-                <i class="fa-solid fa-check-double"></i> Delivered Successfully
-              </div>
-            `}
+    // --- STORE CATALOG & TRACKING LOOKUP ---
+    function initStore() {
+      const grid = document.getElementById('catalog-grid');
+      grid.innerHTML = BAKERY_ITEMS.map(item => `
+        <div class="bg-white border rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+          <img src="${item.img}" class="h-40 w-full object-cover" />
+          <div class="p-4 space-y-2">
+            <div class="flex justify-between">
+              <h4 class="font-bold text-sm">${item.name}</h4>
+              <span class="font-mono font-bold text-amber-700 text-sm">$${item.price.toFixed(2)}</span>
+            </div>
+            <button onclick="addToCart('${item.id}')" class="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">Add to Basket</button>
           </div>
         </div>
       `).join('');
     }
 
-    function updateRiderStatus(code, newStatus) {
-      const order = mockOrders.find(o => o.tracking_code === code);
-      if (order) {
-        order.delivery_status = newStatus;
-        renderRiderPortal();
-      }
+    function addToCart(id) {
+      cart[id] = (cart[id] || 0) + 1;
+      renderCart();
     }
 
-    // Initialize Storefront on page load
-    renderProducts();
+    function renderCart() {
+      const list = document.getElementById('cart-list');
+      let subtotal = 0;
+      list.innerHTML = Object.keys(cart).map(id => {
+        const item = BAKERY_ITEMS.find(i => i.id === id);
+        const qty = cart[id];
+        subtotal += item.price * qty;
+        return `<div class="flex justify-between py-1.5"><span>${item.name} × ${qty}</span><span class="font-bold">$${(item.price * qty).toFixed(2)}</span></div>`;
+      }).join('') || '<p class="text-stone-400 py-3 text-center">Your basket is empty</p>';
+
+      document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-total').innerText = `$${subtotal.toFixed(2)}`;
+    }
+
+    async function handleCustomerCheckout() {
+      if (!currentUser || currentUser.role !== 'customer') {
+        alert("Please login or create a customer account before placing an order.");
+        showSection('customer-auth');
+        return;
+      }
+      if (Object.keys(cart).length === 0) return alert("Your basket is empty.");
+
+      const address = prompt("Confirm your delivery address:", "Plot 14 Kampala Road, Suite 3B");
+      if (!address) return;
+
+      const res = await fetch(`${API_BASE}/api/v1/deliveries/order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+        body: JSON.stringify({
+          recipient_name: currentUser.name,
+          recipient_phone: '+256700000000',
+          shipping_address: address,
+          notes: 'Handle fragile confectionery carefully',
+          total_amount: parseFloat(document.getElementById('cart-total').innerText.replace('$', ''))
+        })
+      });
+      const data = await res.json();
+      cart = {};
+      renderCart();
+      alert(`Order placed successfully! Tracking Code: ${data.tracking_code}`);
+      document.getElementById('cust-track-code').value = data.tracking_code;
+      lookupTracking();
+    }
+
+    async function lookupTracking() {
+      const code = document.getElementById('cust-track-code').value.trim();
+      if (!code) return;
+      const res = await fetch(`${API_BASE}/api/v1/deliveries/track/${code}`);
+      const data = await res.json();
+      if (!res.ok) return alert(data.error);
+
+      document.getElementById('tracking-result-box').classList.remove('hidden');
+      document.getElementById('track-status').innerText = data.tracking.delivery_status.toUpperCase();
+      document.getElementById('track-code-val').innerText = data.tracking.tracking_code;
+      document.getElementById('track-addr-val').innerText = data.tracking.shipping_address;
+      document.getElementById('track-rider-val').innerText = data.tracking.driver_name ? `${data.tracking.driver_name} (${data.tracking.driver_phone || 'Courier'})` : 'Awaiting Kitchen Assignment';
+    }
+
+    // App Initialization
+    checkAuthState();
+    initStore();
   </script>
 </body>
 </html>
