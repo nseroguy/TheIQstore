@@ -40,12 +40,12 @@
       <div class="rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 shadow-xl">
         <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold uppercase">Fresh Batches</span>
         <h2 class="font-serif-title text-3xl sm:text-5xl font-bold mt-2">Artisan Cakes & Sweet Delights</h2>
-        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes with real-time temperature-safe dispatch directly to your doorstep.</p>
+        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes with secure two-factor PIN verification on arrival.</p>
       </div>
 
       <!-- Tracking lookup bar -->
       <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col sm:flex-row gap-2">
-        <input type="text" id="cust-track-code" placeholder="Enter Tracking Code (e.g. IQ-TEST88)" class="flex-grow px-4 py-2 text-sm border border-stone-200 rounded-xl font-mono uppercase focus:ring-2 focus:ring-amber-500 outline-none" />
+        <input type="text" id="cust-track-code" placeholder="Enter Tracking Code (e.g. IQ-ED40F5)" class="flex-grow px-4 py-2 text-sm border border-stone-200 rounded-xl font-mono uppercase focus:ring-2 focus:ring-amber-500 outline-none" />
         <button onclick="lookupTracking()" class="px-6 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl hover:bg-stone-800 transition">Track Parcel</button>
       </div>
 
@@ -55,6 +55,16 @@
           <h3 class="font-bold text-stone-900 text-lg">Delivery Status: <span id="track-status" class="text-amber-600 font-mono"></span></h3>
           <button onclick="document.getElementById('tracking-result-box').classList.add('hidden')" class="text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
+
+        <!-- Security Delivery PIN Card for Customer -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800">Your Delivery Confirmation PIN</span>
+            <p class="text-xs text-amber-700 mt-0.5">Provide this code to your rider at delivery.</p>
+          </div>
+          <div class="bg-amber-500 text-stone-950 font-mono font-black text-2xl px-4 py-1.5 rounded-lg shadow-sm" id="track-pin-val">----</div>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
           <div><p class="text-stone-400">Tracking Code:</p><p id="track-code-val" class="font-mono font-bold text-stone-800"></p></div>
           <div><p class="text-stone-400">Destination:</p><p id="track-addr-val" class="font-semibold text-stone-800"></p></div>
@@ -88,16 +98,16 @@
     <div id="sec-customer-auth" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
       <div class="text-center">
         <h2 id="cust-auth-title" class="text-2xl font-bold font-serif-title text-stone-900">Customer Login</h2>
-        <p class="text-xs text-stone-500 mt-1">Access your cake orders and delivery history</p>
+        <p class="text-xs text-stone-500 mt-1">Access your cake orders and security delivery PINs</p>
       </div>
       <form id="cust-auth-form" onsubmit="submitCustomerAuth(event)" class="space-y-4 text-xs">
         <div id="field-signup-name" class="hidden">
           <label class="block font-semibold text-stone-600 mb-1">Full Name</label>
-          <input type="text" id="cust-name-input" class="w-full px-3 py-2 border rounded-xl" placeholder="Alice Walker" />
+          <input type="text" id="cust-name-input" class="w-full px-3 py-2 border rounded-xl" placeholder="Jane Baker" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Email Address</label>
-          <input type="email" id="cust-email-input" required class="w-full px-3 py-2 border rounded-xl" placeholder="alice@example.com" />
+          <input type="email" id="cust-email-input" required class="w-full px-3 py-2 border rounded-xl" placeholder="jane@iqstore.com" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Password</label>
@@ -130,10 +140,9 @@
         </div>
         <button type="submit" class="w-full py-2.5 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition">Enter Kitchen Dispatch</button>
       </form>
-      <p class="text-[11px] text-stone-400 text-center">Staff accounts are provisioned exclusively by the Bakery Admin.</p>
     </div>
 
-    <!-- Rider / Courier Login -->
+    <!-- Rider Login -->
     <div id="sec-rider-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
       <div class="text-center">
         <div class="w-12 h-12 rounded-xl bg-amber-500 text-stone-900 flex items-center justify-center mx-auto text-xl font-bold mb-2">
@@ -153,7 +162,6 @@
         </div>
         <button type="submit" class="w-full py-2.5 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition">Login to Courier Duty</button>
       </form>
-      <p class="text-[11px] text-stone-400 text-center">Rider access accounts are provisioned exclusively by the Bakery Admin.</p>
     </div>
 
     <!-- Admin Master Login -->
@@ -163,7 +171,7 @@
           <i class="fa-solid fa-shield-halved"></i>
         </div>
         <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Admin Login</h2>
-        <p class="text-xs text-stone-500 mt-1">Master store management & employee provisioning</p>
+        <p class="text-xs text-stone-500 mt-1">Master store management & provisioning</p>
       </div>
       <form onsubmit="submitRoleLogin(event, 'admin')" class="space-y-4 text-xs">
         <div>
@@ -179,12 +187,12 @@
     </div>
 
     <!-- 3. ROLE-SECURED DASHBOARDS -->
-    <!-- Dispatch Desk Portal -->
+    <!-- Dispatch Desk Portal (Shows Pickup PIN) -->
     <div id="sec-dispatch-dashboard" class="hidden space-y-6">
       <div class="flex justify-between items-center border-b pb-4">
         <div>
           <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Queue</h2>
-          <p class="text-xs text-stone-500">Assign incoming orders to available couriers</p>
+          <p class="text-xs text-stone-500">Assign incoming orders and hand Store Pickup PINs to couriers</p>
         </div>
         <button onclick="loadDispatchQueue()" class="px-4 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl">Refresh Queue</button>
       </div>
@@ -195,6 +203,7 @@
               <th class="p-3">Tracking</th>
               <th class="p-3">Customer & Destination</th>
               <th class="p-3">Status</th>
+              <th class="p-3">Store Pickup PIN</th>
               <th class="p-3">Assign Courier</th>
             </tr>
           </thead>
@@ -203,7 +212,7 @@
       </div>
     </div>
 
-    <!-- Rider Delivery Portal -->
+    <!-- Rider Delivery Portal (PIN-Gated Operations) -->
     <div id="sec-rider-dashboard" class="hidden max-w-2xl mx-auto space-y-6">
       <div class="bg-stone-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
         <div>
@@ -239,18 +248,18 @@
           </div>
           <div>
             <label class="block font-semibold text-stone-600 mb-1">Full Name</label>
-            <input type="text" id="emp-name" required placeholder="John Courier" class="w-full px-3 py-2 border rounded-xl" />
+            <input type="text" id="emp-name" required placeholder="Peter Kigozi" class="w-full px-3 py-2 border rounded-xl" />
           </div>
           <div>
             <label class="block font-semibold text-stone-600 mb-1">Email</label>
-            <input type="email" id="emp-email" required placeholder="courier4@theiqstore.com" class="w-full px-3 py-2 border rounded-xl" />
+            <input type="email" id="emp-email" required placeholder="courier@theiqstore.com" class="w-full px-3 py-2 border rounded-xl" />
           </div>
           <div>
             <label class="block font-semibold text-stone-600 mb-1">Temporary Password</label>
             <input type="password" id="emp-pass" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-xl" />
           </div>
           <div>
-            <label class="block font-semibold text-stone-600 mb-1">Vehicle / Unit Details (Optional for Riders)</label>
+            <label class="block font-semibold text-stone-600 mb-1">Vehicle / Unit Details</label>
             <input type="text" id="emp-vehicle" placeholder="Box Motorcycle #04" class="w-full px-3 py-2 border rounded-xl" />
           </div>
           <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition">
@@ -436,6 +445,9 @@
             </td>
             <td class="p-3"><span class="px-2 py-0.5 rounded font-bold ${o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.delivery_status}</span></td>
             <td class="p-3">
+              <span class="font-mono font-bold bg-stone-100 px-2.5 py-1 rounded border border-stone-200 text-stone-800">${o.pickup_pin || '----'}</span>
+            </td>
+            <td class="p-3">
               ${o.driver_name ? `<span class="font-semibold text-stone-700">${o.driver_name}</span>` : `
                 <select onchange="assignRider('${o.tracking_code}', this.value)" class="border px-2 py-1 rounded text-xs">
                   <option value="">-- Choose Rider --</option>
@@ -483,9 +495,13 @@
             <p class="text-xs text-stone-500">${t.shipping_address}</p>
             <div class="flex gap-2 pt-2">
               ${t.delivery_status === 'assigned' ? `
-                <button onclick="updateRiderDrop('${t.tracking_code}', 'in_transit')" class="w-full py-2 bg-amber-600 text-white rounded-xl font-bold text-xs">Acknowledge Pickup</button>
+                <button onclick="promptRiderAction('${t.tracking_code}', 'in_transit')" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-key"></i> Enter Store Pickup PIN
+                </button>
               ` : `
-                <button onclick="updateRiderDrop('${t.tracking_code}', 'delivered')" class="w-full py-2 bg-emerald-600 text-white rounded-xl font-bold text-xs">Mark Dropoff Complete</button>
+                <button onclick="promptRiderAction('${t.tracking_code}', 'delivered')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-circle-check"></i> Enter Customer Delivery PIN
+                </button>
               `}
             </div>
           </div>
@@ -495,7 +511,17 @@
       }
     }
 
-    async function updateRiderDrop(trackingCode, status) {
+    function promptRiderAction(trackingCode, status) {
+      const promptLabel = status === 'in_transit' 
+        ? "Enter the 4-digit Store Pickup PIN from Kitchen Dispatch:" 
+        : "Enter the 4-digit Customer Delivery PIN from recipient:";
+      
+      const pin = prompt(promptLabel);
+      if (!pin) return;
+      updateRiderDropWithPin(trackingCode, status, pin);
+    }
+
+    async function updateRiderDropWithPin(trackingCode, status, pin) {
       try {
         const res = await fetch(`/api/v1/deliveries/rider/update-status`, {
           method: 'PATCH',
@@ -506,16 +532,18 @@
           body: JSON.stringify({ 
             tracking_code: trackingCode, 
             status: status,
-            proof_of_delivery: status === 'delivered' ? 'Handed directly to recipient' : null
+            pin: pin,
+            proof_of_delivery: status === 'delivered' ? 'Handed directly to recipient after PIN validation' : null
           })
         });
 
         const data = await res.json();
         if (!res.ok) {
-          alert(`Error updating delivery status: ${data.error || 'Server rejected request'}`);
+          alert(`Verification Failed: ${data.error || 'Invalid code'}`);
           return;
         }
 
+        alert(status === 'in_transit' ? 'Pickup verified! Package marked In Transit.' : 'Delivery verified successfully! Order completed.');
         loadRiderTasks();
       } catch (err) {
         console.error('Network error during rider drop update:', err);
@@ -576,14 +604,14 @@
           recipient_name: currentUser.name,
           recipient_phone: '+256700000000',
           shipping_address: address,
-          notes: 'Handle fragile confectionery carefully',
+          notes: 'Fragile confectionery delivery',
           total_amount: parseFloat(document.getElementById('cart-total').innerText.replace('$', ''))
         })
       });
       const data = await res.json();
       cart = {};
       renderCart();
-      alert(`Order placed successfully! Tracking Code: ${data.tracking_code}`);
+      alert(`Order placed successfully!\nTracking Code: ${data.tracking_code}\nYour Delivery Confirmation PIN: ${data.delivery_pin}`);
       document.getElementById('cust-track-code').value = data.tracking_code;
       lookupTracking();
     }
@@ -600,6 +628,7 @@
       document.getElementById('track-code-val').innerText = data.tracking.tracking_code;
       document.getElementById('track-addr-val').innerText = data.tracking.shipping_address;
       document.getElementById('track-rider-val').innerText = data.tracking.driver_name ? `${data.tracking.driver_name} (${data.tracking.driver_phone || 'Courier'})` : 'Awaiting Kitchen Assignment';
+      document.getElementById('track-pin-val').innerText = data.tracking.delivery_pin || '----';
     }
 
     checkAuthState();
