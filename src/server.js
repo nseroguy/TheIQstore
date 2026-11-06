@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const multer = require('multer');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -8,6 +9,7 @@ const path = require('path');
 const authRoutes = require('./modules/auth/auth.routes');
 const deliveryRoutes = require('./modules/delivery/delivery.routes');
 const adminRoutes = require('./modules/admin/admin.routes');
+const { requireAuth, requireRole } = require('./middleware/auth.middleware');
 
 const app = express();
 
@@ -18,8 +20,40 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
-// Static files (frontend)
+// Static files (frontend and uploaded cake media)
 app.use(express.static(path.join(__dirname, '../public')));
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+
+// Multer storage configuration for camera captures and file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../public/uploads'));
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname) || '.jpg';
+    cb(null, 'cake-' + Date.now() + '-' + Math.round(Math.random() * 1e4) + ext);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB maximum for high-res mobile snaps
+});
+
+// Admin Image Upload Endpoint (Camera & Files)
+app.post(
+  '/api/v1/admin/upload-image',
+  requireAuth,
+  requireRole(['admin']),
+  upload.single('image'),
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file was received' });
+    }
+    const publicUrl = '/uploads/' + req.file.filename;
+    res.json({ success: true, url: publicUrl });
+  }
+);
 
 // Health check endpoint
 app.get('/healthz', (req, res) => {
