@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The IQ Bakery & Confectionery</title>
+  
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#d97706" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="IQ Bakery" />
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/992/992747.png" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
@@ -14,7 +23,7 @@
 </head>
 <body class="bg-stone-50 text-stone-800 min-h-screen flex flex-col">
 
-  <!-- TOP HEADER & PORTAL NAVIGATION -->
+  <!-- TOP HEADER -->
   <header class="bg-stone-900 text-stone-100 shadow-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
       <div onclick="showSection('customer-store')" class="flex items-center space-x-3 cursor-pointer">
@@ -26,13 +35,15 @@
           <p class="text-[11px] text-amber-400 font-medium">Fine Confectionery & Dispatch</p>
         </div>
       </div>
-
-      <!-- Right Portal Links -->
-      <div id="auth-nav-area" class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm"></div>
+      <div class="flex items-center gap-2">
+        <button id="pwa-install-btn" class="hidden px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold">
+          <i class="fa-solid fa-download mr-1"></i> Install App
+        </button>
+        <div id="auth-nav-area" class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm"></div>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN SECTIONS CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
     <!-- 1. CUSTOMER STOREFRONT & TRACKER -->
@@ -40,7 +51,7 @@
       <div class="rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 shadow-xl">
         <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold uppercase">Fresh Batches</span>
         <h2 class="font-serif-title text-3xl sm:text-5xl font-bold mt-2">Artisan Cakes & Sweet Delights</h2>
-        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes with secure two-factor PIN verification on arrival.</p>
+        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes with real-time temperature-safe dispatch directly to your doorstep.</p>
       </div>
 
       <!-- Tracking lookup bar -->
@@ -49,65 +60,80 @@
         <button onclick="lookupTracking()" class="px-6 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl hover:bg-stone-800 transition">Track Parcel</button>
       </div>
 
-      <!-- Live Tracking Result Modal/Card -->
+      <!-- Live Tracking Card -->
       <div id="tracking-result-box" class="hidden bg-white p-6 rounded-2xl border border-amber-200 shadow-md space-y-4">
         <div class="flex justify-between items-center border-b border-stone-100 pb-3">
           <h3 class="font-bold text-stone-900 text-lg">Delivery Status: <span id="track-status" class="text-amber-600 font-mono"></span></h3>
           <button onclick="document.getElementById('tracking-result-box').classList.add('hidden')" class="text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
-        <!-- Security Delivery PIN Card for Customer -->
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between">
-          <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-800">Your Delivery Confirmation PIN</span>
-            <p class="text-xs text-amber-700 mt-0.5">Provide this code to your rider at delivery.</p>
-          </div>
-          <div class="bg-amber-500 text-stone-950 font-mono font-black text-2xl px-4 py-1.5 rounded-lg shadow-sm" id="track-pin-val">----</div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
           <div><p class="text-stone-400">Tracking Code:</p><p id="track-code-val" class="font-mono font-bold text-stone-800"></p></div>
+          <div><p class="text-stone-400">Payment:</p><p id="track-pay-val" class="font-semibold text-stone-800"></p></div>
           <div><p class="text-stone-400">Destination:</p><p id="track-addr-val" class="font-semibold text-stone-800"></p></div>
-          <div><p class="text-stone-400">Courier:</p><p id="track-rider-val" class="font-semibold text-stone-800"></p></div>
+          <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center">
+            <p class="text-amber-800 font-bold uppercase tracking-wider text-[10px]">Your Delivery PIN</p>
+            <p id="track-pin-val" class="font-mono text-xl font-black text-amber-700 mt-0.5">----</p>
+            <p class="text-[10px] text-amber-600">Give this to the courier at handoff</p>
+          </div>
         </div>
       </div>
 
-      <!-- Product Catalog & Cart -->
+      <!-- Catalog & Basket -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 space-y-6">
           <h3 class="font-serif-title text-xl font-bold text-stone-900">Today's Specialties</h3>
           <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
         </div>
 
-        <!-- Cart / Checkout -->
+        <!-- Basket & Checkout -->
         <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
           <h3 class="font-bold text-lg text-stone-900 flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-amber-600"></i> Your Basket</h3>
-          <div id="cart-list" class="divide-y divide-stone-100 text-xs max-h-56 overflow-y-auto"></div>
+          <div id="cart-list" class="divide-y divide-stone-100 text-xs max-h-48 overflow-y-auto"></div>
+          
+          <!-- Payment Options in Basket -->
+          <div class="border-t border-stone-100 pt-3 space-y-2">
+            <label class="block text-xs font-bold text-stone-700">Select Payment Method</label>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <label class="border p-2.5 rounded-xl cursor-pointer flex items-center gap-2 has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
+                <input type="radio" name="pay-method" value="cash" checked onchange="togglePayInputs()" class="text-amber-600" />
+                <span class="font-medium"><i class="fa-solid fa-money-bill-wave text-emerald-600 mr-1"></i> Cash on Delivery</span>
+              </label>
+              <label class="border p-2.5 rounded-xl cursor-pointer flex items-center gap-2 has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
+                <input type="radio" name="pay-method" value="mobile_money" onchange="togglePayInputs()" class="text-amber-600" />
+                <span class="font-medium"><i class="fa-solid fa-mobile-screen text-amber-600 mr-1"></i> Mobile Money</span>
+              </label>
+            </div>
+            <div id="momo-input-box" class="hidden text-xs pt-1">
+              <label class="block text-stone-500 mb-1">MTN / Airtel Mobile Money Number</label>
+              <input type="tel" id="checkout-momo-phone" placeholder="+256 700 000000" class="w-full px-3 py-2 border rounded-xl" />
+            </div>
+          </div>
+
           <div class="border-t border-stone-100 pt-3 text-xs space-y-1">
             <div class="flex justify-between"><span>Subtotal:</span><span id="cart-subtotal" class="font-bold">$0.00</span></div>
             <div class="flex justify-between text-stone-900 font-bold text-sm"><span>Total Due:</span><span id="cart-total">$0.00</span></div>
           </div>
           <button onclick="handleCustomerCheckout()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition">
-            Proceed to Checkout
+            Place Order
           </button>
         </div>
       </div>
     </div>
 
-    <!-- 2. AUTHENTICATION PAGES -->
+    <!-- 2. ROLE AUTHENTICATION PAGES -->
     <div id="sec-customer-auth" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
       <div class="text-center">
         <h2 id="cust-auth-title" class="text-2xl font-bold font-serif-title text-stone-900">Customer Login</h2>
-        <p class="text-xs text-stone-500 mt-1">Access your cake orders and security delivery PINs</p>
+        <p class="text-xs text-stone-500 mt-1">Access orders and delivery status</p>
       </div>
       <form id="cust-auth-form" onsubmit="submitCustomerAuth(event)" class="space-y-4 text-xs">
         <div id="field-signup-name" class="hidden">
           <label class="block font-semibold text-stone-600 mb-1">Full Name</label>
-          <input type="text" id="cust-name-input" class="w-full px-3 py-2 border rounded-xl" placeholder="Jane Baker" />
+          <input type="text" id="cust-name-input" class="w-full px-3 py-2 border rounded-xl" placeholder="Alice Walker" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Email Address</label>
-          <input type="email" id="cust-email-input" required class="w-full px-3 py-2 border rounded-xl" placeholder="jane@iqstore.com" />
+          <input type="email" id="cust-email-input" required class="w-full px-3 py-2 border rounded-xl" placeholder="alice@example.com" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Password</label>
@@ -120,19 +146,19 @@
       </div>
     </div>
 
-    <!-- Dispatch Desk Login -->
+    <!-- Staff Login -->
     <div id="sec-staff-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
       <div class="text-center">
         <div class="w-12 h-12 rounded-xl bg-stone-900 text-amber-500 flex items-center justify-center mx-auto text-xl font-bold mb-2">
           <i class="fa-solid fa-kitchen-set"></i>
         </div>
         <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Login</h2>
-        <p class="text-xs text-stone-500 mt-1">Authorized bakery operations personnel only</p>
+        <p class="text-xs text-stone-500 mt-1">Sign in with your @theiqstore.com staff address</p>
       </div>
       <form onsubmit="submitRoleLogin(event, 'staff')" class="space-y-4 text-xs">
         <div>
-          <label class="block font-semibold text-stone-600 mb-1">Staff Email</label>
-          <input type="email" id="staff-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="dispatch@theiqstore.com" />
+          <label class="block font-semibold text-stone-600 mb-1">Staff Sign-In Email</label>
+          <input type="email" id="staff-email" required class="w-full px-3 py-2 border rounded-xl font-mono" placeholder="dispatch@theiqstore.com" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Password</label>
@@ -149,12 +175,12 @@
           <i class="fa-solid fa-motorcycle"></i>
         </div>
         <h2 class="text-2xl font-bold font-serif-title text-stone-900">Rider Delivery Portal</h2>
-        <p class="text-xs text-stone-500 mt-1">Confectionery courier login</p>
+        <p class="text-xs text-stone-500 mt-1">Sign in with your auto-generated courier email</p>
       </div>
       <form onsubmit="submitRoleLogin(event, 'rider')" class="space-y-4 text-xs">
         <div>
-          <label class="block font-semibold text-stone-600 mb-1">Rider Email</label>
-          <input type="email" id="rider-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="peter.rider@theiqstore.com" />
+          <label class="block font-semibold text-stone-600 mb-1">Rider Sign-In Email</label>
+          <input type="email" id="rider-email" required class="w-full px-3 py-2 border rounded-xl font-mono" placeholder="peter.rider@theiqstore.com" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Password</label>
@@ -171,7 +197,6 @@
           <i class="fa-solid fa-shield-halved"></i>
         </div>
         <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Admin Login</h2>
-        <p class="text-xs text-stone-500 mt-1">Master store management & provisioning</p>
       </div>
       <form onsubmit="submitRoleLogin(event, 'admin')" class="space-y-4 text-xs">
         <div>
@@ -186,13 +211,13 @@
       </form>
     </div>
 
-    <!-- 3. ROLE-SECURED DASHBOARDS -->
-    <!-- Dispatch Desk Portal (Shows Pickup PIN) -->
+    <!-- 3. ROLE DASHBOARDS -->
+    <!-- Dispatch Queue -->
     <div id="sec-dispatch-dashboard" class="hidden space-y-6">
       <div class="flex justify-between items-center border-b pb-4">
         <div>
           <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Queue</h2>
-          <p class="text-xs text-stone-500">Assign incoming orders and hand Store Pickup PINs to couriers</p>
+          <p class="text-xs text-stone-500">Provide the 4-digit Pickup PIN to the assigned courier upon kitchen handoff</p>
         </div>
         <button onclick="loadDispatchQueue()" class="px-4 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl">Refresh Queue</button>
       </div>
@@ -202,8 +227,9 @@
             <tr>
               <th class="p-3">Tracking</th>
               <th class="p-3">Customer & Destination</th>
+              <th class="p-3">Payment</th>
+              <th class="p-3">Pickup PIN</th>
               <th class="p-3">Status</th>
-              <th class="p-3">Store Pickup PIN</th>
               <th class="p-3">Assign Courier</th>
             </tr>
           </thead>
@@ -212,7 +238,7 @@
       </div>
     </div>
 
-    <!-- Rider Delivery Portal (PIN-Gated Operations) -->
+    <!-- Rider Portal -->
     <div id="sec-rider-dashboard" class="hidden max-w-2xl mx-auto space-y-6">
       <div class="bg-stone-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
         <div>
@@ -227,11 +253,11 @@
       </div>
     </div>
 
-    <!-- Admin Master Dashboard -->
+    <!-- Admin Master Dashboard (Auto-Generated Employee Sign-in Setup) -->
     <div id="sec-admin-dashboard" class="hidden space-y-8">
       <div class="border-b pb-4">
         <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
-        <p class="text-xs text-stone-500">Provision Dispatch Staff and Delivery Riders</p>
+        <p class="text-xs text-stone-500">Auto-provision customized sign-in credentials for couriers and kitchen staff</p>
       </div>
 
       <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm max-w-xl space-y-4">
@@ -247,23 +273,27 @@
             </select>
           </div>
           <div>
-            <label class="block font-semibold text-stone-600 mb-1">Full Name</label>
+            <label class="block font-semibold text-stone-600 mb-1">Full Legal Name</label>
             <input type="text" id="emp-name" required placeholder="Peter Kigozi" class="w-full px-3 py-2 border rounded-xl" />
           </div>
           <div>
-            <label class="block font-semibold text-stone-600 mb-1">Email</label>
-            <input type="email" id="emp-email" required placeholder="courier@theiqstore.com" class="w-full px-3 py-2 border rounded-xl" />
+            <label class="block font-semibold text-stone-600 mb-1">Sudo / Pseudo Name (User Login Handle)</label>
+            <div class="flex items-center">
+              <input type="text" id="emp-sudo" required placeholder="peter.rider" oninput="updateEmailPreview(this.value)" class="flex-grow px-3 py-2 border rounded-l-xl font-mono" />
+              <span class="bg-stone-100 border border-l-0 px-3 py-2 rounded-r-xl text-stone-500 font-mono text-xs">@theiqstore.com</span>
+            </div>
+            <p class="text-[11px] text-amber-700 mt-1">Generated login: <span id="emp-email-preview" class="font-mono font-bold">peter.rider@theiqstore.com</span></p>
           </div>
           <div>
-            <label class="block font-semibold text-stone-600 mb-1">Temporary Password</label>
+            <label class="block font-semibold text-stone-600 mb-1">Password</label>
             <input type="password" id="emp-pass" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-xl" />
           </div>
           <div>
-            <label class="block font-semibold text-stone-600 mb-1">Vehicle / Unit Details</label>
+            <label class="block font-semibold text-stone-600 mb-1">Vehicle Details</label>
             <input type="text" id="emp-vehicle" placeholder="Box Motorcycle #04" class="w-full px-3 py-2 border rounded-xl" />
           </div>
           <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition">
-            Create User Account
+            Generate & Provision Account
           </button>
         </form>
       </div>
@@ -282,6 +312,42 @@
       { id: 'cake-3', name: 'French Macaron Gift Collection (12pcs)', price: 18.00, img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' }
     ];
 
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration error:', err));
+      });
+    }
+
+    // PWA Install Prompt Banner
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('pwa-install-btn');
+      if (installBtn) {
+        installBtn.classList.remove('hidden');
+        installBtn.addEventListener('click', async () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            installBtn.classList.add('hidden');
+          }
+        });
+      }
+    });
+
+    function updateEmailPreview(val) {
+      const clean = (val || 'username').trim().toLowerCase().replace(/[^a-z0-9.]/g, '.').replace(/\.+/g, '.');
+      document.getElementById('emp-email-preview').innerText = `${clean}@theiqstore.com`;
+    }
+
+    function togglePayInputs() {
+      const method = document.querySelector('input[name="pay-method"]:checked').value;
+      document.getElementById('momo-input-box').classList.toggle('hidden', method !== 'mobile_money');
+    }
+
     function showSection(sectionId) {
       const sections = [
         'customer-store', 'customer-auth', 'staff-login', 
@@ -299,23 +365,23 @@
       const navArea = document.getElementById('auth-nav-area');
       if (!currentUser || !authToken) {
         navArea.innerHTML = `
-          <button onclick="showSection('customer-auth')" class="text-stone-300 hover:text-white">Customer Sign In</button>
+          <button onclick="showSection('customer-auth')" class="text-stone-300 hover:text-white">Customer</button>
           <span class="text-stone-600">|</span>
-          <button onclick="showSection('staff-login')" class="text-stone-300 hover:text-white">Staff Desk</button>
+          <button onclick="showSection('staff-login')" class="text-stone-300 hover:text-white">Staff</button>
           <span class="text-stone-600">|</span>
           <button onclick="showSection('rider-login')" class="text-stone-300 hover:text-white">Rider</button>
           <span class="text-stone-600">|</span>
-          <button onclick="showSection('admin-login')" class="text-amber-400 hover:text-amber-300 font-bold">Admin</button>
+          <button onclick="showSection('admin-login')" class="text-amber-400 font-bold">Admin</button>
         `;
       } else {
         let roleBadge = `<span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-xs uppercase font-mono">${currentUser.role}</span>`;
         let dashboardBtn = '';
-        if (currentUser.role === 'admin') dashboardBtn = `<button onclick="showSection('admin-dashboard')" class="text-amber-400 font-bold">Admin Console</button>`;
-        if (currentUser.role === 'staff') dashboardBtn = `<button onclick="showSection('dispatch-dashboard')" class="text-amber-400 font-bold">Kitchen Queue</button>`;
-        if (currentUser.role === 'driver') dashboardBtn = `<button onclick="showSection('rider-dashboard')" class="text-amber-400 font-bold">My Deliveries</button>`;
+        if (currentUser.role === 'admin') dashboardBtn = `<button onclick="showSection('admin-dashboard')" class="text-amber-400 font-bold">Admin</button>`;
+        if (currentUser.role === 'staff') dashboardBtn = `<button onclick="showSection('dispatch-dashboard')" class="text-amber-400 font-bold">Kitchen</button>`;
+        if (currentUser.role === 'driver') dashboardBtn = `<button onclick="showSection('rider-dashboard')" class="text-amber-400 font-bold">Rider</button>`;
 
         navArea.innerHTML = `
-          <span class="text-stone-300">${currentUser.name} (${roleBadge})</span>
+          <span class="text-stone-300 hidden sm:inline">${currentUser.name} (${roleBadge})</span>
           ${dashboardBtn}
           <button onclick="handleLogout()" class="text-stone-400 hover:text-red-400 ml-2"><i class="fa-solid fa-power-off"></i></button>
         `;
@@ -401,7 +467,7 @@
       const payload = {
         role: document.getElementById('emp-role').value,
         name: document.getElementById('emp-name').value,
-        email: document.getElementById('emp-email').value,
+        sudo_name: document.getElementById('emp-sudo').value,
         password: document.getElementById('emp-pass').value,
         vehicle_info: document.getElementById('emp-vehicle').value
       };
@@ -418,8 +484,9 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        alert(data.message);
+        alert(`Success!\n${data.message}`);
         e.target.reset();
+        updateEmailPreview('');
       } catch (err) {
         alert(err.message);
       }
@@ -443,10 +510,15 @@
               <p class="font-bold text-stone-800">${o.recipient_name}</p>
               <p class="text-stone-500">${o.shipping_address}</p>
             </td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded font-bold ${o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.delivery_status}</span></td>
             <td class="p-3">
-              <span class="font-mono font-bold bg-stone-100 px-2.5 py-1 rounded border border-stone-200 text-stone-800">${o.pickup_pin || '----'}</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold ${o.payment_method === 'mobile_money' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                ${o.payment_method === 'mobile_money' ? 'Mobile Money' : 'Cash on Delivery'}
+              </span>
             </td>
+            <td class="p-3 font-mono font-bold text-stone-900 bg-amber-50/50">
+              ${o.pickup_pin ? `<span class="bg-amber-200/80 text-amber-900 px-2 py-1 rounded text-xs tracking-wider">${o.pickup_pin}</span>` : 'N/A'}
+            </td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded font-bold ${o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.delivery_status}</span></td>
             <td class="p-3">
               ${o.driver_name ? `<span class="font-semibold text-stone-700">${o.driver_name}</span>` : `
                 <select onchange="assignRider('${o.tracking_code}', this.value)" class="border px-2 py-1 rounded text-xs">
@@ -487,20 +559,22 @@
 
         container.innerHTML = tasks.map(t => `
           <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
-            <div class="flex justify-between">
+            <div class="flex justify-between items-center">
               <span class="font-mono font-bold text-amber-700">${t.tracking_code}</span>
-              <span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-bold text-xs">${t.delivery_status}</span>
+              <span class="px-2 py-0.5 text-xs rounded font-bold ${t.payment_method === 'cash' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                Collect: ${t.payment_method === 'cash' ? `$${t.total_amount} CASH` : 'PAID (Mobile Money)'}
+              </span>
             </div>
             <p class="font-bold text-stone-800 text-sm">${t.recipient_name} (${t.recipient_phone})</p>
             <p class="text-xs text-stone-500">${t.shipping_address}</p>
             <div class="flex gap-2 pt-2">
               ${t.delivery_status === 'assigned' ? `
-                <button onclick="promptRiderAction('${t.tracking_code}', 'in_transit')" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-key"></i> Enter Store Pickup PIN
+                <button onclick="promptRiderPin('${t.tracking_code}', 'in_transit')" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-key"></i> Confirm Pickup (Enter Store PIN)
                 </button>
               ` : `
-                <button onclick="promptRiderAction('${t.tracking_code}', 'delivered')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-circle-check"></i> Enter Customer Delivery PIN
+                <button onclick="promptRiderPin('${t.tracking_code}', 'delivered')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-signature"></i> Confirm Dropoff (Enter Customer PIN)
                 </button>
               `}
             </div>
@@ -511,17 +585,14 @@
       }
     }
 
-    function promptRiderAction(trackingCode, status) {
-      const promptLabel = status === 'in_transit' 
-        ? "Enter the 4-digit Store Pickup PIN from Kitchen Dispatch:" 
-        : "Enter the 4-digit Customer Delivery PIN from recipient:";
+    async function promptRiderPin(trackingCode, targetStatus) {
+      const promptMsg = targetStatus === 'in_transit'
+        ? "Enter Store Pickup PIN (from Kitchen Staff):"
+        : "Enter Customer Delivery PIN (from Customer):";
       
-      const pin = prompt(promptLabel);
+      const pin = prompt(promptMsg);
       if (!pin) return;
-      updateRiderDropWithPin(trackingCode, status, pin);
-    }
 
-    async function updateRiderDropWithPin(trackingCode, status, pin) {
       try {
         const res = await fetch(`/api/v1/deliveries/rider/update-status`, {
           method: 'PATCH',
@@ -531,23 +602,23 @@
           },
           body: JSON.stringify({ 
             tracking_code: trackingCode, 
-            status: status,
-            pin: pin,
-            proof_of_delivery: status === 'delivered' ? 'Handed directly to recipient after PIN validation' : null
+            status: targetStatus,
+            pin: pin.trim(),
+            proof_of_delivery: targetStatus === 'delivered' ? 'Customer PIN verified at handoff' : null
           })
         });
 
         const data = await res.json();
         if (!res.ok) {
-          alert(`Verification Failed: ${data.error || 'Invalid code'}`);
+          alert(`Verification Failed: ${data.error || 'Invalid PIN'}`);
           return;
         }
 
-        alert(status === 'in_transit' ? 'Pickup verified! Package marked In Transit.' : 'Delivery verified successfully! Order completed.');
+        alert(targetStatus === 'in_transit' ? 'Pickup verified! Order In Transit.' : 'Drop-off verified! Delivery Complete.');
         loadRiderTasks();
       } catch (err) {
-        console.error('Network error during rider drop update:', err);
-        alert('Could not connect to server.');
+        console.error(err);
+        alert('Network error.');
       }
     }
 
@@ -597,21 +668,31 @@
       const address = prompt("Confirm your delivery address:", "Plot 14 Kampala Road, Suite 3B");
       if (!address) return;
 
+      const paymentMethod = document.querySelector('input[name="pay-method"]:checked').value;
+      const momoPhone = paymentMethod === 'mobile_money' ? document.getElementById('checkout-momo-phone').value.trim() : null;
+
+      if (paymentMethod === 'mobile_money' && !momoPhone) {
+        alert("Please provide your Mobile Money phone number for payment processing.");
+        return;
+      }
+
       const res = await fetch(`/api/v1/deliveries/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({
           recipient_name: currentUser.name,
-          recipient_phone: '+256700000000',
+          recipient_phone: momoPhone || '+256700000000',
           shipping_address: address,
-          notes: 'Fragile confectionery delivery',
-          total_amount: parseFloat(document.getElementById('cart-total').innerText.replace('$', ''))
+          notes: 'Handle confectionery carefully',
+          total_amount: parseFloat(document.getElementById('cart-total').innerText.replace('$', '')),
+          payment_method: paymentMethod,
+          payment_phone: momoPhone
         })
       });
       const data = await res.json();
       cart = {};
       renderCart();
-      alert(`Order placed successfully!\nTracking Code: ${data.tracking_code}\nYour Delivery Confirmation PIN: ${data.delivery_pin}`);
+      alert(`Order placed successfully!\nMethod: ${paymentMethod.toUpperCase()}\nTracking: ${data.tracking_code}\nDelivery PIN: ${data.delivery_pin}`);
       document.getElementById('cust-track-code').value = data.tracking_code;
       lookupTracking();
     }
@@ -626,8 +707,8 @@
       document.getElementById('tracking-result-box').classList.remove('hidden');
       document.getElementById('track-status').innerText = data.tracking.delivery_status.toUpperCase();
       document.getElementById('track-code-val').innerText = data.tracking.tracking_code;
+      document.getElementById('track-pay-val').innerText = `${data.tracking.payment_method === 'mobile_money' ? 'Mobile Money' : 'Cash on Delivery'} ($${data.tracking.total_amount})`;
       document.getElementById('track-addr-val').innerText = data.tracking.shipping_address;
-      document.getElementById('track-rider-val').innerText = data.tracking.driver_name ? `${data.tracking.driver_name} (${data.tracking.driver_phone || 'Courier'})` : 'Awaiting Kitchen Assignment';
       document.getElementById('track-pin-val').innerText = data.tracking.delivery_pin || '----';
     }
 

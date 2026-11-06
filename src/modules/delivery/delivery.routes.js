@@ -4,17 +4,16 @@ const crypto = require('crypto');
 const { pool } = require('../../config/db');
 const { requireAuth, requireRole } = require('../../middleware/auth.middleware');
 
-// Helper to generate a random 4-digit PIN
 const generatePin = () => Math.floor(1000 + Math.random() * 9000).toString();
 
-// 1. PUBLIC / CUSTOMER: Track an order (Includes customer's secret delivery_pin)
+// 1. PUBLIC: Track an order
 router.get('/track/:trackingCode', async (req, res) => {
   try {
     const { trackingCode } = req.params;
     const query = `
       SELECT d.tracking_code, d.delivery_status, d.recipient_name, d.recipient_phone,
              d.shipping_address, d.notes, d.estimated_arrival, d.delivered_at,
-             d.proof_of_delivery, d.delivery_pin, o.total_amount,
+             d.delivery_pin, d.proof_of_delivery, o.total_amount, o.payment_method, o.payment_status,
              u.name as driver_name, u.phone as driver_phone, u.vehicle_info
       FROM deliveries d
       LEFT JOIN orders o ON d.order_id = o.id
@@ -31,20 +30,23 @@ router.get('/track/:trackingCode', async (req, res) => {
   }
 });
 
-// 2. CUSTOMER: Place Confectionery Order (Generates Pickup and Delivery PINs)
+// 2. CUSTOMER: Place Order with Payment Method Selection
 router.post('/order', requireAuth, requireRole(['customer', 'admin']), async (req, res) => {
   const client = await pool.connect();
   try {
-    const { recipient_name, recipient_phone, shipping_address, notes, total_amount } = req.body;
+    const { recipient_name, recipient_phone, shipping_address, notes, total_amount, payment_method, payment_phone } = req.body;
     await client.query('BEGIN');
 
+    const paymentMethod = payment_method === 'mobile_money' ? 'mobile_money' : 'cash';
+    const paymentStatus = paymentMethod === 'cash' ? 'pending_cash_on_delivery' : 'mobile_money_confirmed';
+
     const orderRes = await client.query(
-      `INSERT INTO orders (customer_id, total_amount, payment_status) VALUES ($1, $2, 'paid') RETURNING id;`,
-      [req.user.id, total_amount || 25.00]
+      `INSERT INTO orders (customer_id, total_amount, payment_status, payment_method, payment_phone)
+       VALUES ($1, $2, $3, $4, $5) RETURNING id;`,
+      [req.user.id, total_amount || 25.00, paymentStatus, paymentMethod, payment_phone || null]
     );
     const orderId = orderRes.rows[0].id;
     const trackingCode = 'IQ-' + crypto.randomBytes(3).toString('hex').toUpperCase();
-
     const pickupPin = generatePin();
     const deliveryPin = generatePin();
 
@@ -61,6 +63,7 @@ router.post('/order', requireAuth, requireRole(['customer', 'admin']), async (re
       success: true, 
       tracking_code: trackingCode, 
       delivery_pin: deliveryPin,
+      payment_method: paymentMethod,
       delivery: deliveryRes.rows[0] 
     });
   } catch (err) {
@@ -71,11 +74,11 @@ router.post('/order', requireAuth, requireRole(['customer', 'admin']), async (re
   }
 });
 
-// 3. DISPATCH DESK & ADMIN: Kitchen Queue (Exposes pickup_pin for kitchen staff hand-off)
+// 3. DISPATCH DESK & ADMIN: Kitchen Queue
 router.get('/dispatch/queue', requireAuth, requireRole(['staff', 'admin']), async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT d.*, o.total_amount, u.name as driver_name
+      SELECT d.*, o.total_amount, o.payment_method, o.payment_status, u.name as driver_name
       FROM deliveries d
       JOIN orders o ON d.order_id = o.id
       LEFT JOIN users u ON d.driver_id = u.id
@@ -114,7 +117,7 @@ router.get('/rider/my-tasks', requireAuth, requireRole(['driver']), async (req, 
     const result = await pool.query(
       `SELECT d.id, d.order_id, d.driver_id, d.delivery_status, d.recipient_name,
               d.recipient_phone, d.shipping_address, d.tracking_code, d.notes,
-              d.estimated_arrival, d.delivered_at, d.created_at, o.total_amount 
+              d.estimated_arrival, o.total_amount, o.payment_method, o.payment_status
        FROM deliveries d
        JOIN orders o ON d.order_id = o.id
        WHERE d.driver_id = $1::uuid AND d.delivery_status != 'delivered'
@@ -133,51 +136,45 @@ router.patch('/rider/update-status', requireAuth, requireRole(['driver']), async
     const { tracking_code, status, pin, proof_of_delivery } = req.body;
 
     if (!['in_transit', 'delivered'].includes(status)) {
-      return res.status(400).json({ error: "Invalid status transition" });
+      return res.status(400).json({ error: 'Invalid status transition' });
+    }
+    if (!pin || pin.toString().trim() === '') {
+      return res.status(400).json({ error: `Verification PIN required to confirm ${status === 'in_transit' ? 'pickup' : 'delivery'}` });
     }
 
-    if (!pin) {
-      return res.status(400).json({ error: `Verification PIN is required to proceed.` });
+    const checkQuery = `
+      SELECT pickup_pin, delivery_pin, delivery_status 
+      FROM deliveries 
+      WHERE UPPER(tracking_code) = UPPER($1) AND driver_id = $2::uuid;
+    `;
+    const checkRes = await pool.query(checkQuery, [tracking_code, req.user.id]);
+    if (checkRes.rows.length === 0) {
+      return res.status(404).json({ error: 'Order not found or not assigned to you' });
     }
 
-    // Retrieve order to verify corresponding PIN
-    const orderCheck = await pool.query(
-      `SELECT pickup_pin, delivery_pin, delivery_status, driver_id 
-       FROM deliveries 
-       WHERE UPPER(tracking_code) = UPPER($1) AND driver_id = $2::uuid;`,
-      [tracking_code, req.user.id]
-    );
+    const currentOrder = checkRes.rows[0];
+    const cleanPin = pin.toString().trim();
 
-    if (orderCheck.rows.length === 0) {
-      return res.status(404).json({ error: 'Order not found or not assigned to you.' });
-    }
-
-    const currentOrder = orderCheck.rows[0];
-
-    // Check Pickup PIN from bakery kitchen
     if (status === 'in_transit') {
-      if (currentOrder.pickup_pin && currentOrder.pickup_pin.trim() !== pin.toString().trim()) {
-        return res.status(403).json({ error: 'Invalid Store Pickup PIN. Please verify with bakery dispatch.' });
+      if (currentOrder.pickup_pin && currentOrder.pickup_pin !== cleanPin) {
+        return res.status(400).json({ error: 'Invalid Store Pickup PIN. Ask bakery kitchen staff.' });
+      }
+    } else if (status === 'delivered') {
+      if (currentOrder.delivery_pin && currentOrder.delivery_pin !== cleanPin) {
+        return res.status(400).json({ error: 'Invalid Customer Delivery PIN. Ask customer at drop-off.' });
       }
     }
 
-    // Check Delivery PIN from customer
-    if (status === 'delivered') {
-      if (currentOrder.delivery_pin && currentOrder.delivery_pin.trim() !== pin.toString().trim()) {
-        return res.status(403).json({ error: 'Invalid Customer Delivery PIN. Please ask recipient for their 4-digit code.' });
-      }
-    }
-
-    const query = `
+    const updateQuery = `
       UPDATE deliveries 
       SET delivery_status = $1::VARCHAR,
           proof_of_delivery = COALESCE($2::TEXT, proof_of_delivery),
           delivered_at = CASE WHEN $1::VARCHAR = 'delivered' THEN NOW() ELSE delivered_at END,
           updated_at = NOW()
-      WHERE UPPER(tracking_code) = UPPER($3) AND driver_id = $4::uuid
+      WHERE UPPER(tracking_code) = UPPER($3) AND driver_id = $4::UUID
       RETURNING *;
     `;
-    const result = await pool.query(query, [
+    const result = await pool.query(updateQuery, [
       status, 
       proof_of_delivery || null, 
       tracking_code, 
