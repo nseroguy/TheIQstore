@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The IQ Bakery & Confectionery</title>
   
-  <!-- PWA Meta Tags -->
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#d97706" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -78,19 +77,18 @@
         </div>
       </div>
 
-      <!-- Catalog & Basket -->
+      <!-- Products & Cart -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2 space-y-6">
           <h3 class="font-serif-title text-xl font-bold text-stone-900">Today's Specialties</h3>
           <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
         </div>
 
-        <!-- Basket & Checkout -->
+        <!-- Basket & Payment Selection -->
         <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
           <h3 class="font-bold text-lg text-stone-900 flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-amber-600"></i> Your Basket</h3>
           <div id="cart-list" class="divide-y divide-stone-100 text-xs max-h-48 overflow-y-auto"></div>
           
-          <!-- Payment Options in Basket -->
           <div class="border-t border-stone-100 pt-3 space-y-2">
             <label class="block text-xs font-bold text-stone-700">Select Payment Method</label>
             <div class="grid grid-cols-2 gap-2 text-xs">
@@ -158,7 +156,7 @@
       <form onsubmit="submitRoleLogin(event, 'staff')" class="space-y-4 text-xs">
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Staff Sign-In Email</label>
-          <input type="email" id="staff-email" required class="w-full px-3 py-2 border rounded-xl font-mono" placeholder="dispatch@theiqstore.com" />
+          <input type="email" id="staff-email" required class="w-full px-3 py-2 border rounded-xl font-mono" placeholder="sarah.dispatch@theiqstore.com" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Password</label>
@@ -211,7 +209,7 @@
       </form>
     </div>
 
-    <!-- 3. ROLE DASHBOARDS -->
+    <!-- 3. ROLE SECURED DASHBOARDS -->
     <!-- Dispatch Queue -->
     <div id="sec-dispatch-dashboard" class="hidden space-y-6">
       <div class="flex justify-between items-center border-b pb-4">
@@ -253,49 +251,159 @@
       </div>
     </div>
 
-    <!-- Admin Master Dashboard (Auto-Generated Employee Sign-in Setup) -->
+    <!-- ======================================================== -->
+    <!-- PURPOSE-BUILT ADMIN MANAGEMENT CONSOLE                   -->
+    <!-- ======================================================== -->
     <div id="sec-admin-dashboard" class="hidden space-y-8">
-      <div class="border-b pb-4">
-        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
-        <p class="text-xs text-stone-500">Auto-provision customized sign-in credentials for couriers and kitchen staff</p>
+      
+      <!-- Admin Header with Live Statistics -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-stone-200 pb-4">
+        <div>
+          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
+          <p class="text-xs text-stone-500">Personnel Credential Provisioning & Active Staff Roster</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="loadAdminDashboardData()" class="px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5">
+            <i class="fa-solid fa-arrows-rotate"></i> Refresh Roster
+          </button>
+        </div>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm max-w-xl space-y-4">
-        <h3 class="font-bold text-stone-900 text-sm flex items-center gap-2">
-          <i class="fa-solid fa-user-plus text-amber-600"></i> Provision Staff or Rider
-        </h3>
-        <form onsubmit="handleCreateEmployee(event)" class="space-y-3 text-xs">
+      <!-- Quick Operational Metrics -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+          <p class="text-[11px] font-semibold text-stone-500 uppercase">Couriers On Roster</p>
+          <p id="metric-couriers-count" class="text-2xl font-bold text-amber-600 mt-1 font-mono">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+          <p class="text-[11px] font-semibold text-stone-500 uppercase">Kitchen Dispatchers</p>
+          <p id="metric-staff-count" class="text-2xl font-bold text-stone-800 mt-1 font-mono">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+          <p class="text-[11px] font-semibold text-stone-500 uppercase">Active Accounts</p>
+          <p id="metric-active-count" class="text-2xl font-bold text-emerald-600 mt-1 font-mono">0</p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+          <p class="text-[11px] font-semibold text-stone-500 uppercase">Suspended</p>
+          <p id="metric-inactive-count" class="text-2xl font-bold text-rose-500 mt-1 font-mono">0</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left: Auto-Provisioning Form -->
+        <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
           <div>
-            <label class="block font-semibold text-stone-600 mb-1">Account Role</label>
-            <select id="emp-role" class="w-full px-3 py-2 border rounded-xl">
-              <option value="driver">Delivery Rider (Courier)</option>
-              <option value="staff">Kitchen Dispatch Staff</option>
-            </select>
+            <h3 class="font-bold text-stone-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-user-shield text-amber-600"></i> Provision Personnel
+            </h3>
+            <p class="text-xs text-stone-400 mt-0.5">Generates role credentials locked to @theiqstore.com</p>
           </div>
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Full Legal Name</label>
-            <input type="text" id="emp-name" required placeholder="Peter Kigozi" class="w-full px-3 py-2 border rounded-xl" />
-          </div>
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Sudo / Pseudo Name (User Login Handle)</label>
-            <div class="flex items-center">
-              <input type="text" id="emp-sudo" required placeholder="peter.rider" oninput="updateEmailPreview(this.value)" class="flex-grow px-3 py-2 border rounded-l-xl font-mono" />
-              <span class="bg-stone-100 border border-l-0 px-3 py-2 rounded-r-xl text-stone-500 font-mono text-xs">@theiqstore.com</span>
+
+          <form onsubmit="handleCreateEmployee(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold text-stone-600 mb-1">Account Role</label>
+              <select id="emp-role" onchange="toggleVehicleField()" class="w-full px-3 py-2 border rounded-xl bg-white font-medium">
+                <option value="driver">Delivery Rider (Courier)</option>
+                <option value="staff">Kitchen Dispatch Staff</option>
+              </select>
             </div>
-            <p class="text-[11px] text-amber-700 mt-1">Generated login: <span id="emp-email-preview" class="font-mono font-bold">peter.rider@theiqstore.com</span></p>
+
+            <div>
+              <label class="block font-semibold text-stone-600 mb-1">Full Legal Name</label>
+              <input type="text" id="emp-name" required placeholder="Peter Kigozi" class="w-full px-3 py-2 border rounded-xl" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-stone-600 mb-1">Login Handle (Pseudo Name)</label>
+              <div class="flex items-center">
+                <input 
+                  type="text" 
+                  id="emp-sudo" 
+                  required 
+                  placeholder="peter.rider" 
+                  oninput="updateEmailPreview(this.value)" 
+                  class="flex-grow px-3 py-2 border rounded-l-xl font-mono focus:ring-1 focus:ring-amber-500 outline-none" 
+                />
+                <span class="bg-stone-100 border border-l-0 px-3 py-2 rounded-r-xl text-stone-600 font-mono text-xs font-semibold">@theiqstore.com</span>
+              </div>
+              <p class="text-[11px] text-stone-500 mt-1">
+                Generated login: <span id="emp-email-preview" class="font-mono font-bold text-amber-700">username@theiqstore.com</span>
+              </p>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-stone-600 mb-1">Initial Password</label>
+              <div class="relative">
+                <input type="text" id="emp-pass" required placeholder="TemporaryPassword123" class="w-full px-3 py-2 border rounded-xl font-mono text-xs pr-16" />
+                <button type="button" onclick="generateRandomPassword()" class="absolute right-2 top-2 text-[10px] text-amber-700 font-bold hover:underline">Generate</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-stone-600 mb-1">Contact Phone</label>
+              <input type="tel" id="emp-phone" placeholder="+256 700 000000" class="w-full px-3 py-2 border rounded-xl" />
+            </div>
+
+            <!-- Vehicle Details (Only for Rider) -->
+            <div id="emp-vehicle-wrapper">
+              <label class="block font-semibold text-stone-600 mb-1">Assigned Vehicle / Unit</label>
+              <input type="text" id="emp-vehicle" placeholder="Box Motorcycle #04" class="w-full px-3 py-2 border rounded-xl" />
+            </div>
+
+            <button type="submit" class="w-full py-2.5 bg-stone-900 hover:bg-stone-800 text-white font-bold rounded-xl transition shadow">
+              <i class="fa-solid fa-id-badge mr-1"></i> Register & Auto-Assign Email
+            </button>
+          </form>
+
+          <!-- Success Credentials Modal / Box -->
+          <div id="credential-share-card" class="hidden p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="font-bold text-amber-900 uppercase text-[10px]">Credentials Generated</span>
+              <button onclick="copyGeneratedCredentials()" class="text-amber-700 font-bold hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-copy"></i> Copy Details
+              </button>
+            </div>
+            <div class="font-mono bg-white p-2.5 rounded-lg border border-amber-200 text-stone-800 space-y-1 select-all">
+              <p>Email: <strong id="card-email" class="text-amber-800"></strong></p>
+              <p>Password: <strong id="card-pass"></strong></p>
+              <p>Role: <strong id="card-role" class="uppercase"></strong></p>
+            </div>
+            <p class="text-[10px] text-stone-500">Forward these credentials to the employee for their designated portal.</p>
           </div>
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Password</label>
-            <input type="password" id="emp-pass" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-xl" />
+        </div>
+
+        <!-- Right: Active Staff & Couriers Directory -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
+            <div>
+              <h3 class="font-bold text-stone-900 text-sm">Personnel Roster</h3>
+              <p class="text-xs text-stone-400">Current active kitchen dispatchers and couriers</p>
+            </div>
+            <span id="roster-count-badge" class="px-2.5 py-1 bg-stone-200 text-stone-700 text-xs rounded-lg font-bold">0 users</span>
           </div>
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Vehicle Details</label>
-            <input type="text" id="emp-vehicle" placeholder="Box Motorcycle #04" class="w-full px-3 py-2 border rounded-xl" />
+
+          <div class="overflow-x-auto flex-grow">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-stone-50 text-stone-600 border-b">
+                <tr>
+                  <th class="p-3">User & Contact</th>
+                  <th class="p-3">Role</th>
+                  <th class="p-3">Sign-In Email</th>
+                  <th class="p-3">Vehicle</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="admin-roster-body" class="divide-y divide-stone-100">
+                <tr>
+                  <td colspan="6" class="p-4 text-center text-stone-400">Loading roster...</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition">
-            Generate & Provision Account
-          </button>
-        </form>
+        </div>
+
       </div>
     </div>
 
@@ -305,6 +413,7 @@
     let currentUser = JSON.parse(localStorage.getItem('iq_user') || 'null');
     let authToken = localStorage.getItem('iq_token') || null;
     let cart = {};
+    let latestGeneratedCredentials = null;
 
     const BAKERY_ITEMS = [
       { id: 'cake-1', name: 'Belgian Chocolate Truffle Cake (1kg)', price: 30.00, img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
@@ -312,14 +421,12 @@
       { id: 'cake-3', name: 'French Macaron Gift Collection (12pcs)', price: 18.00, img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' }
     ];
 
-    // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration error:', err));
       });
     }
 
-    // PWA Install Prompt Banner
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -330,7 +437,7 @@
         installBtn.addEventListener('click', async () => {
           if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
             installBtn.classList.add('hidden');
           }
@@ -338,9 +445,34 @@
       }
     });
 
+    // Sanitizes sudo_name preview in real-time, stripping accidental domains or duplicate @s
+    function cleanSudoInput(raw) {
+      return (raw || '')
+        .trim()
+        .toLowerCase()
+        .replace(/@.*$/, '')
+        .replace(/\.?theiqstore\.com/gi, '')
+        .replace(/[^a-z0-9.]/g, '.')
+        .replace(/\.+/g, '.')
+        .replace(/^\.|\.$/g, '');
+    }
+
     function updateEmailPreview(val) {
-      const clean = (val || 'username').trim().toLowerCase().replace(/[^a-z0-9.]/g, '.').replace(/\.+/g, '.');
-      document.getElementById('emp-email-preview').innerText = `${clean}@theiqstore.com`;
+      const sanitized = cleanSudoInput(val);
+      document.getElementById('emp-email-preview').innerText = `${sanitized || 'username'}@theiqstore.com`;
+    }
+
+    function toggleVehicleField() {
+      const role = document.getElementById('emp-role').value;
+      const vehicleWrapper = document.getElementById('emp-vehicle-wrapper');
+      vehicleWrapper.classList.toggle('hidden', role !== 'driver');
+    }
+
+    function generateRandomPassword() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+      let pass = '';
+      for (let i = 0; i < 9; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      document.getElementById('emp-pass').value = pass;
     }
 
     function togglePayInputs() {
@@ -359,6 +491,7 @@
 
       if (sectionId === 'dispatch-dashboard') loadDispatchQueue();
       if (sectionId === 'rider-dashboard') loadRiderTasks();
+      if (sectionId === 'admin-dashboard') loadAdminDashboardData();
     }
 
     function checkAuthState() {
@@ -376,9 +509,9 @@
       } else {
         let roleBadge = `<span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-xs uppercase font-mono">${currentUser.role}</span>`;
         let dashboardBtn = '';
-        if (currentUser.role === 'admin') dashboardBtn = `<button onclick="showSection('admin-dashboard')" class="text-amber-400 font-bold">Admin</button>`;
-        if (currentUser.role === 'staff') dashboardBtn = `<button onclick="showSection('dispatch-dashboard')" class="text-amber-400 font-bold">Kitchen</button>`;
-        if (currentUser.role === 'driver') dashboardBtn = `<button onclick="showSection('rider-dashboard')" class="text-amber-400 font-bold">Rider</button>`;
+        if (currentUser.role === 'admin') dashboardBtn = `<button onclick="showSection('admin-dashboard')" class="text-amber-400 font-bold">Admin Console</button>`;
+        if (currentUser.role === 'staff') dashboardBtn = `<button onclick="showSection('dispatch-dashboard')" class="text-amber-400 font-bold">Kitchen Queue</button>`;
+        if (currentUser.role === 'driver') dashboardBtn = `<button onclick="showSection('rider-dashboard')" class="text-amber-400 font-bold">My Tasks</button>`;
 
         navArea.innerHTML = `
           <span class="text-stone-300 hidden sm:inline">${currentUser.name} (${roleBadge})</span>
@@ -462,15 +595,18 @@
       checkAuthState();
     }
 
+    // ==========================================
+    // ADMIN FUNCTIONS: PROVISION & ROSTER
+    // ==========================================
     async function handleCreateEmployee(e) {
       e.preventDefault();
-      const payload = {
-        role: document.getElementById('emp-role').value,
-        name: document.getElementById('emp-name').value,
-        sudo_name: document.getElementById('emp-sudo').value,
-        password: document.getElementById('emp-pass').value,
-        vehicle_info: document.getElementById('emp-vehicle').value
-      };
+      const role = document.getElementById('emp-role').value;
+      const name = document.getElementById('emp-name').value;
+      const rawSudo = document.getElementById('emp-sudo').value;
+      const cleanSudo = cleanSudoInput(rawSudo);
+      const password = document.getElementById('emp-pass').value;
+      const phone = document.getElementById('emp-phone').value;
+      const vehicle = document.getElementById('emp-vehicle').value;
 
       try {
         const res = await fetch(`/api/v1/auth/admin/create-employee`, {
@@ -479,19 +615,127 @@
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${authToken}`
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({
+            role,
+            name,
+            sudo_name: cleanSudo,
+            password,
+            phone,
+            vehicle_info: vehicle
+          })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        alert(`Success!\n${data.message}`);
+        // Display credentials share card
+        latestGeneratedCredentials = {
+          email: data.generated_email,
+          password: data.raw_password,
+          role: role === 'driver' ? 'Rider / Courier' : 'Kitchen Dispatch Staff',
+          name: name
+        };
+
+        document.getElementById('credential-share-card').classList.remove('hidden');
+        document.getElementById('card-email').innerText = data.generated_email;
+        document.getElementById('card-pass').innerText = data.raw_password;
+        document.getElementById('card-role').innerText = latestGeneratedCredentials.role;
+
         e.target.reset();
+        toggleVehicleField();
         updateEmailPreview('');
+        loadAdminDashboardData();
       } catch (err) {
         alert(err.message);
       }
     }
 
+    function copyGeneratedCredentials() {
+      if (!latestGeneratedCredentials) return;
+      const text = `TheIQstore Login Credentials:\nRole: ${latestGeneratedCredentials.role}\nName: ${latestGeneratedCredentials.name}\nEmail: ${latestGeneratedCredentials.email}\nPassword: ${latestGeneratedCredentials.password}\nPortal: ${window.location.origin}`;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Credentials copied to clipboard! You can paste them into WhatsApp or SMS.");
+      });
+    }
+
+    async function loadAdminDashboardData() {
+      const tbody = document.getElementById('admin-roster-body');
+      try {
+        const res = await fetch(`/api/v1/auth/admin/employees`, {
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        const employees = data.employees || [];
+
+        // Calculate metrics
+        let couriers = 0, staff = 0, active = 0, inactive = 0;
+        employees.forEach(e => {
+          if (e.role === 'driver') couriers++;
+          if (e.role === 'staff') staff++;
+          if (e.is_active !== false) active++;
+          else inactive++;
+        });
+
+        document.getElementById('metric-couriers-count').innerText = couriers;
+        document.getElementById('metric-staff-count').innerText = staff;
+        document.getElementById('metric-active-count').innerText = active;
+        document.getElementById('metric-inactive-count').innerText = inactive;
+        document.getElementById('roster-count-badge').innerText = `${employees.length} personnel`;
+
+        if (employees.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-stone-400">No employees provisioned yet. Use the form on the left to add couriers or dispatch staff.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = employees.map(emp => `
+          <tr class="hover:bg-stone-50">
+            <td class="p-3">
+              <p class="font-bold text-stone-900">${emp.name}</p>
+              <p class="text-stone-400 text-[11px]">${emp.phone || 'No phone'}</p>
+            </td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded font-bold uppercase text-[10px] ${emp.role === 'driver' ? 'bg-amber-100 text-amber-800' : 'bg-stone-100 text-stone-800'}">
+                ${emp.role === 'driver' ? '<i class="fa-solid fa-motorcycle mr-1"></i> Rider' : '<i class="fa-solid fa-kitchen-set mr-1"></i> Staff'}
+              </span>
+            </td>
+            <td class="p-3 font-mono font-bold text-amber-700">${emp.email}</td>
+            <td class="p-3 text-stone-600">${emp.vehicle_info || '—'}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${emp.is_active !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${emp.is_active !== false ? 'Active' : 'Suspended'}
+              </span>
+            </td>
+            <td class="p-3 text-right">
+              <button onclick="toggleEmployeeStatus('${emp.id}')" class="px-2 py-1 rounded text-[11px] font-bold ${emp.is_active !== false ? 'text-rose-600 hover:bg-rose-50' : 'text-emerald-600 hover:bg-emerald-50'}">
+                ${emp.is_active !== false ? 'Deactivate' : 'Activate'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading roster:', err);
+      }
+    }
+
+    async function toggleEmployeeStatus(id) {
+      if (!confirm("Are you sure you want to change this employee's active access status?")) return;
+      try {
+        const res = await fetch(`/api/v1/auth/admin/employees/${id}/toggle-status`, {
+          method: 'PATCH',
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        loadAdminDashboardData();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // ==========================================
+    // DISPATCH DESK & RIDER OPERATIONS
+    // ==========================================
     async function loadDispatchQueue() {
       const tbody = document.getElementById('dispatch-table-body');
       try {
