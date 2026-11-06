@@ -28,18 +28,14 @@
       </div>
 
       <!-- Right Portal Links -->
-      <div id="auth-nav-area" class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-        <!-- Injected by checkAuthState() -->
-      </div>
+      <div id="auth-nav-area" class="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm"></div>
     </div>
   </header>
 
   <!-- MAIN SECTIONS CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- ========================================== -->
-    <!-- 1. CUSTOMER STOREFRONT & TRACKER          -->
-    <!-- ========================================== -->
+    <!-- 1. CUSTOMER STOREFRONT & TRACKER -->
     <div id="sec-customer-store" class="space-y-8">
       <div class="rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 shadow-xl">
         <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold uppercase">Fresh Batches</span>
@@ -88,11 +84,7 @@
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 2. AUTHENTICATION PAGES                    -->
-    <!-- ========================================== -->
-
-    <!-- Customer Login & Signup -->
+    <!-- 2. AUTHENTICATION PAGES -->
     <div id="sec-customer-auth" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
       <div class="text-center">
         <h2 id="cust-auth-title" class="text-2xl font-bold font-serif-title text-stone-900">Customer Login</h2>
@@ -153,7 +145,7 @@
       <form onsubmit="submitRoleLogin(event, 'rider')" class="space-y-4 text-xs">
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Rider Email</label>
-          <input type="email" id="rider-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="driver@theiqstore.com" />
+          <input type="email" id="rider-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="peter.rider@theiqstore.com" />
         </div>
         <div>
           <label class="block font-semibold text-stone-600 mb-1">Password</label>
@@ -186,10 +178,7 @@
       </form>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 3. ROLE-SECURED DASHBOARDS                -->
-    <!-- ========================================== -->
-
+    <!-- 3. ROLE-SECURED DASHBOARDS -->
     <!-- Dispatch Desk Portal -->
     <div id="sec-dispatch-dashboard" class="hidden space-y-6">
       <div class="flex justify-between items-center border-b pb-4">
@@ -229,14 +218,13 @@
       </div>
     </div>
 
-    <!-- Admin Master Dashboard (Includes Staff & Rider Provisioning) -->
+    <!-- Admin Master Dashboard -->
     <div id="sec-admin-dashboard" class="hidden space-y-8">
       <div class="border-b pb-4">
         <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
         <p class="text-xs text-stone-500">Provision Dispatch Staff and Delivery Riders</p>
       </div>
 
-      <!-- Add Employee Box -->
       <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm max-w-xl space-y-4">
         <h3 class="font-bold text-stone-900 text-sm flex items-center gap-2">
           <i class="fa-solid fa-user-plus text-amber-600"></i> Provision Staff or Rider
@@ -275,7 +263,6 @@
   </main>
 
   <script>
-    const API_BASE = window.location.origin;
     let currentUser = JSON.parse(localStorage.getItem('iq_user') || 'null');
     let authToken = localStorage.getItem('iq_token') || null;
     let cart = {};
@@ -286,7 +273,6 @@
       { id: 'cake-3', name: 'French Macaron Gift Collection (12pcs)', price: 18.00, img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' }
     ];
 
-    // --- NAVIGATION CONTROLLER ---
     function showSection(sectionId) {
       const sections = [
         'customer-store', 'customer-auth', 'staff-login', 
@@ -336,7 +322,6 @@
       showSection('customer-store');
     }
 
-    // --- AUTHENTICATION FLOWS ---
     let isCustomerSignUp = false;
     function toggleCustomerAuthMode() {
       isCustomerSignUp = !isCustomerSignUp;
@@ -356,7 +341,7 @@
         : { email, password };
 
       try {
-        const res = await fetch(`${API_BASE}${endpoint}`, {
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
@@ -377,7 +362,7 @@
       const password = document.getElementById(`${role}-pass`).value;
 
       try {
-        const res = await fetch(`${API_BASE}/api/v1/auth/${role}/login`, {
+        const res = await fetch(`/api/v1/auth/${role}/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -402,7 +387,6 @@
       checkAuthState();
     }
 
-    // --- ADMIN PROVISIONING OF STAFF & RIDERS ---
     async function handleCreateEmployee(e) {
       e.preventDefault();
       const payload = {
@@ -414,7 +398,7 @@
       };
 
       try {
-        const res = await fetch(`${API_BASE}/api/v1/auth/admin/create-employee`, {
+        const res = await fetch(`/api/v1/auth/admin/create-employee`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -432,13 +416,12 @@
       }
     }
 
-    // --- DISPATCH DESK LOGIC ---
     async function loadDispatchQueue() {
       const tbody = document.getElementById('dispatch-table-body');
       try {
         const [ordersRes, ridersRes] = await Promise.all([
-          fetch(`${API_BASE}/api/v1/deliveries/dispatch/queue`, { headers: { 'Authorization': `Bearer ${authToken}` } }),
-          fetch(`${API_BASE}/api/v1/auth/riders`, { headers: { 'Authorization': `Bearer ${authToken}` } })
+          fetch(`/api/v1/deliveries/dispatch/queue`, { headers: { 'Authorization': `Bearer ${authToken}` } }),
+          fetch(`/api/v1/auth/riders`, { headers: { 'Authorization': `Bearer ${authToken}` } })
         ]);
         const ordersData = await ordersRes.json();
         const ridersData = await ridersRes.json();
@@ -469,7 +452,7 @@
 
     async function assignRider(trackingCode, driverId) {
       if (!driverId) return;
-      await fetch(`${API_BASE}/api/v1/deliveries/${trackingCode}/assign-rider`, {
+      await fetch(`/api/v1/deliveries/${trackingCode}/assign-rider`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({ driver_id: driverId })
@@ -477,11 +460,10 @@
       loadDispatchQueue();
     }
 
-    // --- RIDER CONSOLE LOGIC ---
     async function loadRiderTasks() {
       const container = document.getElementById('rider-tasks-container');
       try {
-        const res = await fetch(`${API_BASE}/api/v1/deliveries/rider/my-tasks`, {
+        const res = await fetch(`/api/v1/deliveries/rider/my-tasks`, {
           headers: { 'Authorization': `Bearer ${authToken}` }
         });
         const data = await res.json();
@@ -514,15 +496,33 @@
     }
 
     async function updateRiderDrop(trackingCode, status) {
-      await fetch(`${API_BASE}/api/v1/deliveries/rider/update-status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
-        body: JSON.stringify({ tracking_code: trackingCode, status })
-      });
-      loadRiderTasks();
+      try {
+        const res = await fetch(`/api/v1/deliveries/rider/update-status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({ 
+            tracking_code: trackingCode, 
+            status: status,
+            proof_of_delivery: status === 'delivered' ? 'Handed directly to recipient' : null
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          alert(`Error updating delivery status: ${data.error || 'Server rejected request'}`);
+          return;
+        }
+
+        loadRiderTasks();
+      } catch (err) {
+        console.error('Network error during rider drop update:', err);
+        alert('Could not connect to server.');
+      }
     }
 
-    // --- STORE CATALOG & TRACKING LOOKUP ---
     function initStore() {
       const grid = document.getElementById('catalog-grid');
       grid.innerHTML = BAKERY_ITEMS.map(item => `
@@ -569,7 +569,7 @@
       const address = prompt("Confirm your delivery address:", "Plot 14 Kampala Road, Suite 3B");
       if (!address) return;
 
-      const res = await fetch(`${API_BASE}/api/v1/deliveries/order`, {
+      const res = await fetch(`/api/v1/deliveries/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({
@@ -591,7 +591,7 @@
     async function lookupTracking() {
       const code = document.getElementById('cust-track-code').value.trim();
       if (!code) return;
-      const res = await fetch(`${API_BASE}/api/v1/deliveries/track/${code}`);
+      const res = await fetch(`/api/v1/deliveries/track/${code}`);
       const data = await res.json();
       if (!res.ok) return alert(data.error);
 
@@ -602,7 +602,6 @@
       document.getElementById('track-rider-val').innerText = data.tracking.driver_name ? `${data.tracking.driver_name} (${data.tracking.driver_phone || 'Courier'})` : 'Awaiting Kitchen Assignment';
     }
 
-    // App Initialization
     checkAuthState();
     initStore();
   </script>
