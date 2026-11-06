@@ -7,6 +7,7 @@ const path = require('path');
 
 const authRoutes = require('./modules/auth/auth.routes');
 const deliveryRoutes = require('./modules/delivery/delivery.routes');
+const adminRoutes = require('./modules/admin/admin.routes');
 
 const app = express();
 
@@ -28,6 +29,18 @@ app.get('/healthz', (req, res) => {
 // API Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/deliveries', deliveryRoutes);
+app.use('/api/v1/admin', adminRoutes);
+
+// Public products endpoint for store catalog
+app.get('/api/v1/public/products', async (req, res) => {
+  try {
+    const { pool } = require('./config/db');
+    const result = await pool.query('SELECT * FROM products WHERE is_available = true ORDER BY created_at DESC');
+    res.json({ success: true, products: result.rows });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // SPA Fallback: serve index.html for unknown frontend routes
 app.get('*', (req, res) => {

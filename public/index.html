@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The IQ Bakery & Confectionery</title>
   
   <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#1c1917" />
+  <meta name="theme-color" content="#d97706" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="IQ Bakery" />
@@ -16,204 +16,104 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
-    body { 
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-      padding-bottom: env(safe-area-inset-bottom, 20px);
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .font-serif-title { font-family: 'Playfair Display', serif; }
-    /* Prevent iOS auto-zoom on form inputs by ensuring >= 16px */
-    @media screen and (max-width: 640px) {
-      input, select, textarea {
-        font-size: 16px !important;
-      }
-    }
   </style>
 </head>
-<body class="bg-stone-50 text-stone-800 min-h-screen flex flex-col antialiased select-none pb-20 sm:pb-8">
+<body class="bg-stone-50 text-stone-800 min-h-screen flex flex-col">
 
-  <!-- TOP HEADER (Mobile Compact) -->
-  <header class="bg-stone-900 text-stone-100 shadow-md sticky top-0 z-40 backdrop-blur-md bg-stone-900/95">
-    <div class="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between gap-2">
-      <div onclick="showSection('customer-store')" class="flex items-center space-x-2.5 cursor-pointer">
-        <span class="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-stone-900 font-bold text-lg shadow-md">
+  <!-- TOP HEADER & PERSISTENT NAVIGATION -->
+  <header class="bg-stone-900 text-stone-100 shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+      <div onclick="navigateTo('customer-store')" class="flex items-center space-x-3 cursor-pointer">
+        <span class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center text-stone-900 font-bold text-xl shadow">
           <i class="fa-solid fa-cake-candles"></i>
         </span>
         <div>
-          <h1 class="font-serif-title text-base sm:text-lg font-bold tracking-tight text-amber-100 leading-tight">The IQ Bakery</h1>
-          <p class="text-[10px] text-amber-400 font-semibold tracking-wide uppercase">Kampala Confectionery</p>
+          <h1 class="font-serif-title text-xl font-bold tracking-tight text-amber-100">The IQ Bakery</h1>
+          <p class="text-[11px] text-amber-400 font-medium">Fine Confectionery & Dispatch</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button id="pwa-install-btn" class="hidden px-2 py-1 bg-amber-600 active:scale-95 text-white rounded-lg text-[11px] font-bold shadow">
+      <div class="flex items-center gap-3">
+        <div id="portal-links" class="flex items-center gap-2 text-xs">
+          <button onclick="navigateTo('customer-auth')" class="text-stone-300 hover:text-white transition">Customer</button>
+          <span class="text-stone-600">|</span>
+          <button onclick="navigateTo('staff-login')" class="text-stone-300 hover:text-white transition">Staff</button>
+          <span class="text-stone-600">|</span>
+          <button onclick="navigateTo('rider-login')" class="text-stone-300 hover:text-white transition">Rider</button>
+          <span class="text-stone-600">|</span>
+          <button onclick="navigateTo('admin-login')" class="text-amber-400 font-bold hover:text-amber-300 transition">Admin</button>
+        </div>
+
+        <div id="user-session-area" class="flex items-center gap-2 text-xs border-l border-stone-700 pl-3 hidden"></div>
+
+        <button id="pwa-install-btn" class="hidden px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold">
           <i class="fa-solid fa-download mr-1"></i> Install
         </button>
-        <div id="auth-nav-area" class="flex items-center gap-1.5 text-xs"></div>
       </div>
     </div>
   </header>
 
-  <!-- MAIN VIEW CONTAINER -->
-  <main class="flex-grow max-w-7xl w-full mx-auto p-3.5 sm:p-6 lg:p-8">
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- ======================================================== -->
-    <!-- CUSTOMER AUTHENTICATION (Mobile-First Card)              -->
-    <!-- ======================================================== -->
-    <div id="sec-customer-auth" class="hidden max-w-md mx-auto pt-2 sm:pt-6">
-      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-xl space-y-6">
-        
-        <!-- Header & Icon Badge -->
-        <div class="text-center space-y-2">
-          <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center mx-auto text-2xl shadow-inner">
-            <i id="cust-auth-icon" class="fa-solid fa-user-plus"></i>
-          </div>
-          <div>
-            <h2 id="cust-auth-title" class="text-2xl font-bold font-serif-title text-stone-900">Create Customer Account</h2>
-            <p id="cust-auth-subtitle" class="text-xs text-stone-500 mt-1">Unlock fast checkout, delivery tracking & secret order PINs</p>
-          </div>
-        </div>
-
-        <form id="cust-auth-form" onsubmit="submitCustomerAuth(event)" class="space-y-4">
-          
-          <!-- Full Name (Only on Signup) -->
-          <div id="field-signup-name">
-            <label class="block text-xs font-bold text-stone-700 mb-1">Full Legal Name</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400 text-sm">
-                <i class="fa-solid fa-user"></i>
-              </span>
-              <input type="text" id="cust-name-input" placeholder="e.g. Jane Namubiru" class="w-full pl-10 pr-3.5 py-3 border border-stone-200 rounded-2xl bg-stone-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-sm font-medium" />
-            </div>
-          </div>
-
-          <!-- Phone Number with Ugandan Flag/Prefix (Only on Signup) -->
-          <div id="field-signup-phone">
-            <label class="block text-xs font-bold text-stone-700 mb-1">Mobile / WhatsApp Number</label>
-            <div class="flex items-center">
-              <span class="inline-flex items-center px-3.5 py-3 border border-r-0 border-stone-200 rounded-l-2xl bg-stone-100 text-stone-600 font-mono text-xs font-bold select-none">
-                🇺🇬 +256
-              </span>
-              <input type="tel" id="cust-phone-input" inputmode="tel" placeholder="700 000000" class="w-full px-3.5 py-3 border border-stone-200 rounded-r-2xl bg-stone-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 outline-none text-sm font-mono" />
-            </div>
-          </div>
-
-          <!-- Email Address -->
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Email Address</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400 text-sm">
-                <i class="fa-solid fa-envelope"></i>
-              </span>
-              <input type="email" id="cust-email-input" required inputmode="email" autocomplete="email" placeholder="jane@example.com" class="w-full pl-10 pr-3.5 py-3 border border-stone-200 rounded-2xl bg-stone-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 outline-none transition text-sm" />
-            </div>
-          </div>
-
-          <!-- Password with Inline Eye Reveal -->
-          <div>
-            <label class="block text-xs font-bold text-stone-700 mb-1">Password</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400 text-sm">
-                <i class="fa-solid fa-lock"></i>
-              </span>
-              <input type="password" id="cust-pass-input" required autocomplete="current-password" placeholder="••••••••" class="w-full pl-10 pr-11 py-3 border border-stone-200 rounded-2xl bg-stone-50/50 focus:bg-white focus:ring-2 focus:ring-amber-500 outline-none text-sm font-mono" />
-              <button type="button" onclick="togglePasswordVisibility('cust-pass-input', 'pass-eye-icon')" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-stone-400 hover:text-stone-600 text-sm">
-                <i id="pass-eye-icon" class="fa-solid fa-eye"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Submit Action Button (Big Mobile Target) -->
-          <button type="submit" id="cust-auth-btn" class="w-full py-3.5 bg-amber-600 hover:bg-amber-700 active:scale-[0.99] text-white font-bold rounded-2xl shadow-lg shadow-amber-600/30 transition text-sm flex items-center justify-center gap-2 mt-2">
-            <span>Create Account</span>
-            <i class="fa-solid fa-arrow-right text-xs"></i>
-          </button>
-        </form>
-
-        <!-- Toggle Switcher -->
-        <div class="pt-2 text-center border-t border-stone-100">
-          <button onclick="toggleCustomerAuthMode()" id="cust-auth-toggle" class="text-xs font-bold text-amber-700 hover:text-amber-800 py-1 px-3 rounded-xl transition">
-            Already have an account? Sign In
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- 1. CUSTOMER STOREFRONT & TRACKER                         -->
-    <!-- ======================================================== -->
-    <div id="sec-customer-store" class="space-y-6">
-      
-      <!-- Mobile Hero Banner -->
-      <div class="rounded-3xl bg-gradient-to-r from-amber-700 via-amber-800 to-stone-900 text-white p-6 sm:p-10 shadow-xl relative overflow-hidden">
-        <div class="relative z-10 space-y-2">
-          <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
-            Fresh Artisan Bakes
-          </span>
-          <h2 class="font-serif-title text-2xl sm:text-4xl font-bold">Artisan Cakes & Delights</h2>
-          <p class="text-amber-100/90 text-xs sm:text-sm max-w-md">Freshly crafted cakes delivered with real-time tracking across Kampala.</p>
-        </div>
+    <!-- ========================================== -->
+    <!-- 1. CUSTOMER STOREFRONT & TRACKER           -->
+    <!-- ========================================== -->
+    <div id="sec-customer-store" class="space-y-8">
+      <div class="rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 shadow-xl">
+        <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold uppercase">Fresh Batches</span>
+        <h2 class="font-serif-title text-3xl sm:text-5xl font-bold mt-2">Artisan Cakes & Sweet Delights</h2>
+        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes with real-time temperature-safe dispatch directly to your doorstep.</p>
       </div>
 
-      <!-- Quick Parcel Tracker Input -->
-      <div class="bg-white p-2.5 sm:p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col sm:flex-row gap-2">
-        <div class="relative flex-grow">
-          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400 text-xs">
-            <i class="fa-solid fa-barcode"></i>
-          </span>
-          <input type="text" id="cust-track-code" placeholder="Enter Tracking Code (e.g. IQ-ED40F5)" class="w-full pl-8 pr-3 py-2 text-xs border border-stone-200 rounded-xl font-mono uppercase focus:ring-2 focus:ring-amber-500 outline-none" />
-        </div>
-        <button onclick="lookupTracking()" class="px-5 py-2.5 bg-stone-900 active:scale-95 text-white text-xs font-bold rounded-xl hover:bg-stone-800 transition">
-          Track Delivery
-        </button>
+      <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col sm:flex-row gap-2">
+        <input type="text" id="cust-track-code" placeholder="Enter Tracking Code (e.g. IQ-ED40F5)" class="flex-grow px-4 py-2 text-sm border border-stone-200 rounded-xl font-mono uppercase focus:ring-2 focus:ring-amber-500 outline-none" />
+        <button onclick="lookupTracking()" class="px-6 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl hover:bg-stone-800 transition">Track Parcel</button>
       </div>
 
-      <!-- Live Tracking Card -->
-      <div id="tracking-result-box" class="hidden bg-white p-5 rounded-2xl border border-amber-200 shadow-md space-y-4">
+      <div id="tracking-result-box" class="hidden bg-white p-6 rounded-2xl border border-amber-200 shadow-md space-y-4">
         <div class="flex justify-between items-center border-b border-stone-100 pb-3">
-          <h3 class="font-bold text-stone-900 text-sm sm:text-base">Status: <span id="track-status" class="text-amber-600 font-mono"></span></h3>
-          <button onclick="document.getElementById('tracking-result-box').classList.add('hidden')" class="text-stone-400 p-1"><i class="fa-solid fa-xmark"></i></button>
+          <h3 class="font-bold text-stone-900 text-lg">Delivery Status: <span id="track-status" class="text-amber-600 font-mono"></span></h3>
+          <button onclick="document.getElementById('tracking-result-box').classList.add('hidden')" class="text-stone-400 hover:text-stone-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
           <div><p class="text-stone-400">Tracking Code:</p><p id="track-code-val" class="font-mono font-bold text-stone-800"></p></div>
           <div><p class="text-stone-400">Payment:</p><p id="track-pay-val" class="font-semibold text-stone-800"></p></div>
-          <div class="col-span-2 sm:col-span-1"><p class="text-stone-400">Destination:</p><p id="track-addr-val" class="font-semibold text-stone-800"></p></div>
-          <div class="col-span-2 sm:col-span-1 bg-amber-50 p-3 rounded-xl border border-amber-200 text-center">
+          <div><p class="text-stone-400">Destination:</p><p id="track-addr-val" class="font-semibold text-stone-800"></p></div>
+          <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center">
             <p class="text-amber-800 font-bold uppercase tracking-wider text-[10px]">Your Delivery PIN</p>
-            <p id="track-pin-val" class="font-mono text-2xl font-black text-amber-700 mt-0.5">----</p>
-            <p class="text-[10px] text-amber-600">Give to courier at handoff</p>
+            <p id="track-pin-val" class="font-mono text-xl font-black text-amber-700 mt-0.5">----</p>
+            <p class="text-[10px] text-amber-600">Give this to the courier at handoff</p>
           </div>
         </div>
       </div>
 
-      <!-- Catalog & Basket -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 space-y-4">
-          <h3 class="font-serif-title text-lg font-bold text-stone-900">Today's Specialties</h3>
-          <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-6">
+          <h3 class="font-serif-title text-xl font-bold text-stone-900">Today's Specialties</h3>
+          <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
         </div>
 
-        <!-- Basket & Payment Selection -->
-        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4">
-          <h3 class="font-bold text-base text-stone-900 flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-amber-600"></i> Your Basket</h3>
+        <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+          <h3 class="font-bold text-lg text-stone-900 flex items-center gap-2"><i class="fa-solid fa-basket-shopping text-amber-600"></i> Your Basket</h3>
           <div id="cart-list" class="divide-y divide-stone-100 text-xs max-h-48 overflow-y-auto"></div>
           
           <div class="border-t border-stone-100 pt-3 space-y-2">
-            <label class="block text-xs font-bold text-stone-700">Payment Choice</label>
+            <label class="block text-xs font-bold text-stone-700">Select Payment Method</label>
             <div class="grid grid-cols-2 gap-2 text-xs">
-              <label class="border p-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
+              <label class="border p-2.5 rounded-xl cursor-pointer flex items-center gap-2 has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
                 <input type="radio" name="pay-method" value="cash" checked onchange="togglePayInputs()" class="text-amber-600" />
-                <span class="font-medium text-[11px]"><i class="fa-solid fa-money-bill-wave text-emerald-600 mr-1"></i> Cash</span>
+                <span class="font-medium"><i class="fa-solid fa-money-bill-wave text-emerald-600 mr-1"></i> Cash on Delivery</span>
               </label>
-              <label class="border p-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
+              <label class="border p-2.5 rounded-xl cursor-pointer flex items-center gap-2 has-[:checked]:border-amber-600 has-[:checked]:bg-amber-50">
                 <input type="radio" name="pay-method" value="mobile_money" onchange="togglePayInputs()" class="text-amber-600" />
-                <span class="font-medium text-[11px]"><i class="fa-solid fa-mobile-screen text-amber-600 mr-1"></i> Mobile Money</span>
+                <span class="font-medium"><i class="fa-solid fa-mobile-screen text-amber-600 mr-1"></i> Mobile Money</span>
               </label>
             </div>
             <div id="momo-input-box" class="hidden text-xs pt-1">
-              <label class="block text-stone-500 mb-1">MTN / Airtel Number</label>
-              <input type="tel" id="checkout-momo-phone" placeholder="0700 000000" class="w-full px-3 py-2 border rounded-xl" />
+              <label class="block text-stone-500 mb-1">MTN / Airtel Mobile Money Number</label>
+              <input type="tel" id="checkout-momo-phone" placeholder="+256 700 000000" class="w-full px-3 py-2 border rounded-xl" />
             </div>
           </div>
 
@@ -221,95 +121,159 @@
             <div class="flex justify-between"><span>Subtotal:</span><span id="cart-subtotal" class="font-bold">$0.00</span></div>
             <div class="flex justify-between text-stone-900 font-bold text-sm"><span>Total Due:</span><span id="cart-total">$0.00</span></div>
           </div>
-          <button onclick="handleCustomerCheckout()" class="w-full py-3.5 bg-amber-600 active:scale-[0.99] hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition shadow-md">
+          <button onclick="handleCustomerCheckout()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition">
             Place Order
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Staff Login -->
-    <div id="sec-staff-login" class="hidden max-w-md mx-auto pt-4">
-      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-xl space-y-6">
-        <div class="text-center">
-          <div class="w-12 h-12 rounded-2xl bg-stone-900 text-amber-500 flex items-center justify-center mx-auto text-xl font-bold mb-2">
-            <i class="fa-solid fa-kitchen-set"></i>
-          </div>
-          <h2 class="text-xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Login</h2>
-          <p class="text-xs text-stone-500 mt-1">Authorized bakery operations personnel only</p>
+    <!-- ========================================== -->
+    <!-- 2. BRANDED CUSTOMER AUTH (SIGN IN/UP)      -->
+    <!-- ========================================== -->
+    <div id="sec-customer-auth" class="hidden max-w-md mx-auto my-6 bg-white p-8 rounded-3xl border border-stone-200 shadow-xl space-y-6">
+      <div class="text-center space-y-2">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto text-xl font-bold shadow-inner">
+          <i class="fa-solid fa-cake-candles"></i>
         </div>
-        <form onsubmit="submitRoleLogin(event, 'staff')" class="space-y-4 text-xs">
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Staff Sign-In Email</label>
-            <input type="email" id="staff-email" required class="w-full px-3 py-3 border rounded-xl font-mono" placeholder="dispatch@theiqstore.com" />
-          </div>
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Password</label>
-            <input type="password" id="staff-pass" required class="w-full px-3 py-3 border rounded-xl" placeholder="••••••••" />
-          </div>
-          <button type="submit" class="w-full py-3 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition">Enter Kitchen Dispatch</button>
-        </form>
+        <h2 id="cust-auth-title" class="text-2xl font-bold font-serif-title text-stone-900">Welcome Back</h2>
+        <p id="cust-auth-subtitle" class="text-xs text-stone-500">Sign in to track orders and save your favorite confections</p>
       </div>
+
+      <div class="grid grid-cols-2 p-1 bg-stone-100 rounded-2xl text-xs font-semibold">
+        <button type="button" id="tab-login" onclick="setCustomerAuthMode(false)" class="py-2 rounded-xl transition bg-white text-stone-900 shadow-sm">
+          Sign In
+        </button>
+        <button type="button" id="tab-signup" onclick="setCustomerAuthMode(true)" class="py-2 rounded-xl transition text-stone-500 hover:text-stone-900">
+          Create Account
+        </button>
+      </div>
+
+      <form id="cust-auth-form" onsubmit="submitCustomerAuth(event)" class="space-y-4 text-xs">
+        <div id="field-signup-name" class="hidden space-y-1">
+          <label class="block font-semibold text-stone-700">Full Name</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400">
+              <i class="fa-regular fa-user"></i>
+            </span>
+            <input type="text" id="cust-name-input" class="w-full pl-9 pr-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition" placeholder="Alice Walker" />
+          </div>
+        </div>
+
+        <div id="field-signup-phone" class="hidden space-y-1">
+          <label class="block font-semibold text-stone-700">Phone Number</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400">
+              <i class="fa-solid fa-phone"></i>
+            </span>
+            <input type="tel" id="cust-phone-input" class="w-full pl-9 pr-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition" placeholder="+256 700 000000" />
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block font-semibold text-stone-700">Email Address</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400">
+              <i class="fa-regular fa-envelope"></i>
+            </span>
+            <input type="email" id="cust-email-input" required class="w-full pl-9 pr-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition" placeholder="alice@example.com" />
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="block font-semibold text-stone-700">Password</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input type="password" id="cust-pass-input" required class="w-full pl-9 pr-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition font-mono" placeholder="••••••••" />
+          </div>
+        </div>
+
+        <button type="submit" id="cust-auth-btn" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+          <span>Sign In to Bakery</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Staff Login -->
+    <div id="sec-staff-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-xl bg-stone-900 text-amber-500 flex items-center justify-center mx-auto text-xl font-bold mb-2">
+          <i class="fa-solid fa-kitchen-set"></i>
+        </div>
+        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Login</h2>
+        <p class="text-xs text-stone-500 mt-1">Sign in with your @theiqstore.com staff address</p>
+      </div>
+      <form onsubmit="submitRoleLogin(event, 'staff')" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Staff Sign-In Email</label>
+          <input type="email" id="staff-email" required class="w-full px-3 py-2 border rounded-xl font-mono" placeholder="sarah.dispatch@theiqstore.com" />
+        </div>
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Password</label>
+          <input type="password" id="staff-pass" required class="w-full px-3 py-2 border rounded-xl" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition">Enter Kitchen Dispatch</button>
+      </form>
     </div>
 
     <!-- Rider Login -->
-    <div id="sec-rider-login" class="hidden max-w-md mx-auto pt-4">
-      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-xl space-y-6">
-        <div class="text-center">
-          <div class="w-12 h-12 rounded-2xl bg-amber-500 text-stone-900 flex items-center justify-center mx-auto text-xl font-bold mb-2">
-            <i class="fa-solid fa-motorcycle"></i>
-          </div>
-          <h2 class="text-xl font-bold font-serif-title text-stone-900">Rider Delivery Portal</h2>
-          <p class="text-xs text-stone-500 mt-1">Login to access your assigned cake drops</p>
+    <div id="sec-rider-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-xl bg-amber-500 text-stone-900 flex items-center justify-center mx-auto text-xl font-bold mb-2">
+          <i class="fa-solid fa-motorcycle"></i>
         </div>
-        <form onsubmit="submitRoleLogin(event, 'rider')" class="space-y-4 text-xs">
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Rider Sign-In Email</label>
-            <input type="email" id="rider-email" required class="w-full px-3 py-3 border rounded-xl font-mono" placeholder="peter.rider@theiqstore.com" />
-          </div>
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Password</label>
-            <input type="password" id="rider-pass" required class="w-full px-3 py-3 border rounded-xl" placeholder="••••••••" />
-          </div>
-          <button type="submit" class="w-full py-3 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition">Login to Courier Duty</button>
-        </form>
+        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Rider Delivery Portal</h2>
+        <p class="text-xs text-stone-500 mt-1">Sign in with your courier email</p>
       </div>
+      <form onsubmit="submitRoleLogin(event, 'rider')" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Rider Sign-In Email</label>
+          <input type="email" id="rider-email" required class="w-full px-3 py-2 border rounded-xl font-mono" placeholder="peter.rider@theiqstore.com" />
+        </div>
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Password</label>
+          <input type="password" id="rider-pass" required class="w-full px-3 py-2 border rounded-xl" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-amber-600 text-white font-bold rounded-xl hover:bg-amber-700 transition">Login to Courier Duty</button>
+      </form>
     </div>
 
-    <!-- Admin Master Login -->
-    <div id="sec-admin-login" class="hidden max-w-md mx-auto pt-4">
-      <div class="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200 shadow-xl space-y-6">
-        <div class="text-center">
-          <div class="w-12 h-12 rounded-2xl bg-stone-900 text-white flex items-center justify-center mx-auto text-xl font-bold mb-2">
-            <i class="fa-solid fa-shield-halved"></i>
-          </div>
-          <h2 class="text-xl font-bold font-serif-title text-stone-900">Bakery Admin Login</h2>
+    <!-- Admin Login -->
+    <div id="sec-admin-login" class="hidden max-w-md mx-auto bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-xl bg-stone-900 text-white flex items-center justify-center mx-auto text-xl font-bold mb-2">
+          <i class="fa-solid fa-shield-halved"></i>
         </div>
-        <form onsubmit="submitRoleLogin(event, 'admin')" class="space-y-4 text-xs">
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Admin Email</label>
-            <input type="email" id="admin-email" required class="w-full px-3 py-3 border rounded-xl" placeholder="admin@theiqstore.com" />
-          </div>
-          <div>
-            <label class="block font-semibold text-stone-600 mb-1">Password</label>
-            <input type="password" id="admin-pass" required class="w-full px-3 py-3 border rounded-xl" placeholder="••••••••" />
-          </div>
-          <button type="submit" class="w-full py-3 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition">Authenticate Admin</button>
-        </form>
+        <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Admin Login</h2>
+        <p class="text-xs text-stone-500 mt-1">Authorized store management only</p>
       </div>
+      <form onsubmit="submitRoleLogin(event, 'admin')" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Admin Email</label>
+          <input type="email" id="admin-email" required class="w-full px-3 py-2 border rounded-xl" placeholder="admin@theiqstore.com" />
+        </div>
+        <div>
+          <label class="block font-semibold text-stone-600 mb-1">Password</label>
+          <input type="password" id="admin-pass" required class="w-full px-3 py-2 border rounded-xl" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-stone-900 text-white font-bold rounded-xl hover:bg-stone-800 transition">Authenticate Admin</button>
+      </form>
     </div>
 
     <!-- Kitchen Queue -->
-    <div id="sec-dispatch-dashboard" class="hidden space-y-4">
-      <div class="flex justify-between items-center border-b pb-3">
+    <div id="sec-dispatch-dashboard" class="hidden space-y-6">
+      <div class="flex justify-between items-center border-b pb-4">
         <div>
-          <h2 class="text-xl font-bold font-serif-title text-stone-900">Kitchen Queue</h2>
-          <p class="text-xs text-stone-500">Provide 4-digit Pickup PIN upon kitchen handoff</p>
+          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Kitchen Dispatch Queue</h2>
+          <p class="text-xs text-stone-500">Provide the 4-digit Pickup PIN to the assigned courier upon kitchen handoff</p>
         </div>
-        <button onclick="loadDispatchQueue()" class="px-3 py-1.5 bg-stone-900 text-white text-xs font-bold rounded-xl">Refresh</button>
+        <button onclick="loadDispatchQueue()" class="px-4 py-2 bg-stone-900 text-white text-xs font-bold rounded-xl">Refresh Queue</button>
       </div>
-      <div class="bg-white rounded-2xl border border-stone-200 overflow-x-auto shadow-sm">
-        <table class="w-full text-left text-xs min-w-[600px]">
+      <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-sm">
+        <table class="w-full text-left text-xs">
           <thead class="bg-stone-50 text-stone-600 border-b">
             <tr>
               <th class="p-3">Tracking</th>
@@ -317,7 +281,7 @@
               <th class="p-3">Payment</th>
               <th class="p-3">Pickup PIN</th>
               <th class="p-3">Status</th>
-              <th class="p-3">Courier</th>
+              <th class="p-3">Assign Courier</th>
             </tr>
           </thead>
           <tbody id="dispatch-table-body" class="divide-y divide-stone-100"></tbody>
@@ -326,201 +290,449 @@
     </div>
 
     <!-- Rider Portal -->
-    <div id="sec-rider-dashboard" class="hidden max-w-xl mx-auto space-y-4">
-      <div class="bg-stone-900 text-white p-5 rounded-2xl shadow-md flex justify-between items-center">
+    <div id="sec-rider-dashboard" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="bg-stone-900 text-white p-6 rounded-2xl shadow-md flex justify-between items-center">
         <div>
-          <h3 class="font-bold text-base" id="rider-display-name">Active Rider</h3>
+          <h3 class="font-bold text-lg" id="rider-display-name">Active Rider</h3>
           <p class="text-xs text-amber-400 font-mono">Confectionery Courier Unit</p>
         </div>
-        <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-300 text-xs rounded-full font-bold">On Duty</span>
+        <span class="px-3 py-1 bg-emerald-500/20 text-emerald-300 text-xs rounded-full font-bold">On Duty</span>
       </div>
-      <div class="space-y-3">
-        <h4 class="font-bold text-stone-900 text-sm">Your Assigned Deliveries</h4>
-        <div id="rider-tasks-container" class="space-y-3"></div>
+      <div class="space-y-4">
+        <h4 class="font-bold text-stone-900 font-serif-title text-base">Your Assigned Drops</h4>
+        <div id="rider-tasks-container" class="space-y-4"></div>
       </div>
     </div>
 
-    <!-- Admin Console -->
+    <!-- ======================================================== -->
+    <!-- 3. ADVANCED ADMIN CONSOLE (USERS, PRODUCTS, ACCOUNTS, AUDIT) -->
+    <!-- ======================================================== -->
     <div id="sec-admin-dashboard" class="hidden space-y-6">
-      <div class="flex justify-between items-center border-b pb-3">
+      
+      <!-- Top Title & Navigation Tabs -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-stone-200 pb-4">
         <div>
-          <h2 class="text-xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
-          <p class="text-xs text-stone-500">Provision Personnel & Monitor Staff Roster</p>
+          <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
+          <p class="text-xs text-stone-500">Personnel Roster, Catalog Management, Financial Ledger & Audit Trail</p>
         </div>
-        <button onclick="loadAdminDashboardData()" class="px-3 py-1.5 bg-stone-900 text-white text-xs font-bold rounded-xl">Refresh</button>
-      </div>
-
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-        <div class="bg-white p-3.5 rounded-2xl border shadow-sm">
-          <p class="text-[10px] text-stone-400 uppercase font-bold">Couriers</p>
-          <p id="metric-couriers-count" class="text-xl font-bold text-amber-600 mt-0.5 font-mono">0</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-2xl border shadow-sm">
-          <p class="text-[10px] text-stone-400 uppercase font-bold">Dispatchers</p>
-          <p id="metric-staff-count" class="text-xl font-bold text-stone-800 mt-0.5 font-mono">0</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-2xl border shadow-sm">
-          <p class="text-[10px] text-stone-400 uppercase font-bold">Active</p>
-          <p id="metric-active-count" class="text-xl font-bold text-emerald-600 mt-0.5 font-mono">0</p>
-        </div>
-        <div class="bg-white p-3.5 rounded-2xl border shadow-sm">
-          <p class="text-[10px] text-stone-400 uppercase font-bold">Suspended</p>
-          <p id="metric-inactive-count" class="text-xl font-bold text-rose-500 mt-0.5 font-mono">0</p>
+        
+        <!-- Tab Selector -->
+        <div class="flex items-center gap-1.5 p-1 bg-stone-200 rounded-2xl text-xs font-semibold">
+          <button id="admin-tab-users" onclick="switchAdminTab('users')" class="px-3.5 py-1.5 rounded-xl transition bg-white text-stone-900 shadow-sm">
+            <i class="fa-solid fa-users mr-1 text-amber-600"></i> Users & Roster
+          </button>
+          <button id="admin-tab-products" onclick="switchAdminTab('products')" class="px-3.5 py-1.5 rounded-xl transition text-stone-600 hover:text-stone-900">
+            <i class="fa-solid fa-cake-candles mr-1 text-amber-600"></i> Products
+          </button>
+          <button id="admin-tab-accounts" onclick="switchAdminTab('accounts')" class="px-3.5 py-1.5 rounded-xl transition text-stone-600 hover:text-stone-900">
+            <i class="fa-solid fa-coins mr-1 text-emerald-600"></i> Accounts
+          </button>
+          <button id="admin-tab-audit" onclick="switchAdminTab('audit')" class="px-3.5 py-1.5 rounded-xl transition text-stone-600 hover:text-stone-900">
+            <i class="fa-solid fa-clipboard-list mr-1 text-indigo-600"></i> Audit Trail
+          </button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
-          <h3 class="font-bold text-sm text-stone-900">Provision Personnel</h3>
-          <form onsubmit="handleCreateEmployee(event)" class="space-y-3 text-xs">
-            <div>
-              <label class="block font-semibold mb-1">Role</label>
-              <select id="emp-role" onchange="toggleVehicleField()" class="w-full px-3 py-2 border rounded-xl bg-white">
-                <option value="driver">Delivery Rider (Courier)</option>
-                <option value="staff">Kitchen Dispatch Staff</option>
-              </select>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Full Legal Name</label>
-              <input type="text" id="emp-name" required placeholder="Peter Kigozi" class="w-full px-3 py-2 border rounded-xl" />
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Login Handle</label>
-              <div class="flex items-center">
-                <input type="text" id="emp-sudo" required placeholder="peter.rider" oninput="updateEmailPreview(this.value)" class="flex-grow px-3 py-2 border rounded-l-xl font-mono text-xs" />
-                <span class="bg-stone-100 border border-l-0 px-2 py-2 rounded-r-xl text-stone-500 font-mono text-xs">@theiqstore.com</span>
-              </div>
-              <p class="text-[10px] text-stone-500 mt-1">Sign-in email: <span id="emp-email-preview" class="font-mono font-bold text-amber-700">username@theiqstore.com</span></p>
-            </div>
-            <div>
-              <label class="block font-semibold mb-1">Password</label>
-              <input type="text" id="emp-pass" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
-            </div>
-            <div id="emp-vehicle-wrapper">
-              <label class="block font-semibold mb-1">Vehicle Unit</label>
-              <input type="text" id="emp-vehicle" placeholder="Box Motorcycle #04" class="w-full px-3 py-2 border rounded-xl" />
-            </div>
-            <button type="submit" class="w-full py-2.5 bg-stone-900 text-white font-bold rounded-xl">Register Account</button>
-          </form>
-
-          <div id="credential-share-card" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs space-y-1.5">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-amber-900 uppercase text-[10px]">Credentials Ready</span>
-              <button onclick="copyGeneratedCredentials()" class="text-amber-700 font-bold hover:underline text-[11px]"><i class="fa-solid fa-copy"></i> Copy</button>
-            </div>
-            <div class="font-mono bg-white p-2 rounded border text-[11px] select-all space-y-0.5">
-              <p>Email: <strong id="card-email"></strong></p>
-              <p>Password: <strong id="card-pass"></strong></p>
-            </div>
+      <!-- TAB 1: USERS & PERSONNEL -->
+      <div id="admin-panel-users" class="space-y-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-stone-500 uppercase">Couriers</p>
+            <p id="metric-couriers-count" class="text-2xl font-bold text-amber-600 mt-1 font-mono">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-stone-500 uppercase">Kitchen Staff</p>
+            <p id="metric-staff-count" class="text-2xl font-bold text-stone-800 mt-1 font-mono">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-stone-500 uppercase">Active Accounts</p>
+            <p id="metric-active-count" class="text-2xl font-bold text-emerald-600 mt-1 font-mono">0</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-stone-500 uppercase">Suspended</p>
+            <p id="metric-inactive-count" class="text-2xl font-bold text-rose-500 mt-1 font-mono">0</p>
           </div>
         </div>
 
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 overflow-x-auto shadow-sm">
-          <table class="w-full text-left text-xs min-w-[500px]">
-            <thead class="bg-stone-50 text-stone-600 border-b">
-              <tr>
-                <th class="p-3">User</th>
-                <th class="p-3">Role</th>
-                <th class="p-3">Sign-In Email</th>
-                <th class="p-3">Status</th>
-                <th class="p-3 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody id="admin-roster-body" class="divide-y divide-stone-100"></tbody>
-          </table>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Provision User Form -->
+          <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+            <h3 class="font-bold text-stone-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-user-plus text-amber-600"></i> Provision Personnel
+            </h3>
+            <form onsubmit="handleCreateEmployee(event)" class="space-y-3 text-xs">
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Account Role</label>
+                <select id="emp-role" onchange="toggleVehicleField()" class="w-full px-3 py-2 border rounded-xl bg-white font-medium">
+                  <option value="driver">Delivery Rider (Courier)</option>
+                  <option value="staff">Kitchen Dispatch Staff</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Full Legal Name</label>
+                <input type="text" id="emp-name" required placeholder="Peter Kigozi" class="w-full px-3 py-2 border rounded-xl" />
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Login Handle (Pseudo Name)</label>
+                <div class="flex items-center">
+                  <input type="text" id="emp-sudo" required placeholder="peter.rider" oninput="updateEmailPreview(this.value)" class="flex-grow px-3 py-2 border rounded-l-xl font-mono outline-none" />
+                  <span class="bg-stone-100 border border-l-0 px-3 py-2 rounded-r-xl text-stone-600 font-mono text-xs font-semibold">@theiqstore.com</span>
+                </div>
+                <p class="text-[11px] text-stone-500 mt-1">Generated: <span id="emp-email-preview" class="font-mono font-bold text-amber-700">username@theiqstore.com</span></p>
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Initial Password</label>
+                <div class="relative">
+                  <input type="text" id="emp-pass" required placeholder="TemporaryPassword123" class="w-full px-3 py-2 border rounded-xl font-mono text-xs pr-16" />
+                  <button type="button" onclick="generateRandomPassword()" class="absolute right-2 top-2 text-[10px] text-amber-700 font-bold hover:underline">Generate</button>
+                </div>
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Contact Phone</label>
+                <input type="tel" id="emp-phone" placeholder="+256 700 000000" class="w-full px-3 py-2 border rounded-xl" />
+              </div>
+              <div id="emp-vehicle-wrapper">
+                <label class="block font-semibold text-stone-600 mb-1">Vehicle Details</label>
+                <input type="text" id="emp-vehicle" placeholder="Box Motorcycle #04" class="w-full px-3 py-2 border rounded-xl" />
+              </div>
+              <button type="submit" class="w-full py-2.5 bg-stone-900 hover:bg-stone-800 text-white font-bold rounded-xl transition shadow">
+                Register & Assign Email
+              </button>
+            </form>
+
+            <div id="credential-share-card" class="hidden p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="font-bold text-amber-900 uppercase text-[10px]">Credentials Ready</span>
+                <button onclick="copyGeneratedCredentials()" class="text-amber-700 font-bold hover:underline flex items-center gap-1">
+                  <i class="fa-solid fa-copy"></i> Copy Details
+                </button>
+              </div>
+              <div class="font-mono bg-white p-2.5 rounded-lg border border-amber-200 text-stone-800 space-y-1 select-all">
+                <p>Email: <strong id="card-email" class="text-amber-800"></strong></p>
+                <p>Password: <strong id="card-pass"></strong></p>
+                <p>Role: <strong id="card-role" class="uppercase"></strong></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Personnel Directory Table -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
+              <div>
+                <h3 class="font-bold text-stone-900 text-sm">Personnel & Accounts Roster</h3>
+                <p class="text-xs text-stone-400">Manage dispatchers, couriers, and customers</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="user-filter-role" onchange="loadAdminUsers()" class="px-2.5 py-1 border rounded-lg text-xs bg-white">
+                  <option value="">All Roles</option>
+                  <option value="driver">Riders Only</option>
+                  <option value="staff">Staff Only</option>
+                  <option value="customer">Customers Only</option>
+                </select>
+                <button onclick="loadAdminUsers()" class="px-2.5 py-1 bg-stone-900 text-white rounded-lg text-xs font-semibold">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto flex-grow">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-stone-50 text-stone-600 border-b">
+                  <tr>
+                    <th class="p-3">User & Contact</th>
+                    <th class="p-3">Role</th>
+                    <th class="p-3">Sign-In Email</th>
+                    <th class="p-3">Vehicle</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-roster-body" class="divide-y divide-stone-100"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- TAB 2: PRODUCTS & CATALOG CRUD -->
+      <div id="admin-panel-products" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Add / Edit Product Form -->
+          <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
+            <h3 id="product-form-title" class="font-bold text-stone-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-cake-candles text-amber-600"></i> Add New Specialty Cake
+            </h3>
+            <form id="product-form" onsubmit="handleSaveProduct(event)" class="space-y-3 text-xs">
+              <input type="hidden" id="prod-id" />
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Product Title</label>
+                <input type="text" id="prod-title" required placeholder="Red Velvet Dream (1kg)" class="w-full px-3 py-2 border rounded-xl" />
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block font-semibold text-stone-600 mb-1">Price ($)</label>
+                  <input type="number" step="0.5" id="prod-price" required placeholder="32.00" class="w-full px-3 py-2 border rounded-xl font-mono" />
+                </div>
+                <div>
+                  <label class="block font-semibold text-stone-600 mb-1">Stock</label>
+                  <input type="number" id="prod-stock" value="10" class="w-full px-3 py-2 border rounded-xl font-mono" />
+                </div>
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Category</label>
+                <select id="prod-category" class="w-full px-3 py-2 border rounded-xl bg-white">
+                  <option value="Cakes">Celebration Cakes</option>
+                  <option value="Pastries">Artisan Pastries</option>
+                  <option value="Cookies">Cookies & Macarons</option>
+                  <option value="Breads">Fresh Breads</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Image URL</label>
+                <input type="url" id="prod-image" placeholder="https://images.unsplash.com/photo-..." class="w-full px-3 py-2 border rounded-xl" />
+              </div>
+              <div>
+                <label class="block font-semibold text-stone-600 mb-1">Description / Ingredients</label>
+                <textarea id="prod-desc" rows="2" placeholder="Velvety sponge with Madagascar cream cheese..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+              </div>
+              <div class="flex gap-2 pt-2">
+                <button type="submit" id="btn-save-product" class="flex-grow py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition shadow">
+                  Save Product
+                </button>
+                <button type="button" id="btn-cancel-edit" onclick="resetProductForm()" class="hidden px-3 py-2.5 bg-stone-200 text-stone-700 font-bold rounded-xl">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Products Table -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
+              <div>
+                <h3 class="font-bold text-stone-900 text-sm">Bakery Catalog</h3>
+                <p class="text-xs text-stone-400">Live products available for customer ordering</p>
+              </div>
+              <button onclick="loadAdminProducts()" class="px-2.5 py-1 bg-stone-900 text-white rounded-lg text-xs font-semibold">
+                <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
+              </button>
+            </div>
+            <div class="overflow-x-auto flex-grow">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-stone-50 text-stone-600 border-b">
+                  <tr>
+                    <th class="p-3">Product</th>
+                    <th class="p-3">Category</th>
+                    <th class="p-3">Price</th>
+                    <th class="p-3">Stock</th>
+                    <th class="p-3">Availability</th>
+                    <th class="p-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-products-body" class="divide-y divide-stone-100"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TAB 3: ACCOUNTS & FINANCIAL LEDGER -->
+      <div id="admin-panel-accounts" class="hidden space-y-6">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-stone-500 uppercase">Gross Revenue</p>
+            <p id="acc-gross-rev" class="text-2xl font-bold text-stone-900 mt-1 font-mono">$0.00</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-emerald-700 uppercase">Cash on Delivery</p>
+            <p id="acc-cash-rev" class="text-2xl font-bold text-emerald-600 mt-1 font-mono">$0.00</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-amber-700 uppercase">Mobile Money (MOMO)</p>
+            <p id="acc-momo-rev" class="text-2xl font-bold text-amber-600 mt-1 font-mono">$0.00</p>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
+            <p class="text-[11px] font-semibold text-stone-500 uppercase">Pending Settlement</p>
+            <p id="acc-pending-rev" class="text-2xl font-bold text-indigo-600 mt-1 font-mono">$0.00</p>
+          </div>
+        </div>
+
+        <!-- Ledger Table -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
+            <div>
+              <h3 class="font-bold text-stone-900 text-sm">Recent Order Transactions</h3>
+              <p class="text-xs text-stone-400">Reconciliation records for cash collections and digital mobile money</p>
+            </div>
+            <button onclick="loadAdminAccounts()" class="px-2.5 py-1 bg-stone-900 text-white rounded-lg text-xs font-semibold">
+              <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Ledger
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-stone-50 text-stone-600 border-b">
+                <tr>
+                  <th class="p-3">Order & Tracking</th>
+                  <th class="p-3">Customer</th>
+                  <th class="p-3">Method</th>
+                  <th class="p-3">Amount</th>
+                  <th class="p-3">Payment Status</th>
+                  <th class="p-3">Delivery Status</th>
+                  <th class="p-3">Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="admin-accounts-body" class="divide-y divide-stone-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: IMMUTABLE AUDIT TRAIL -->
+      <div id="admin-panel-audit" class="hidden space-y-6">
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
+            <div>
+              <h3 class="font-bold text-stone-900 text-sm">System Audit Trail</h3>
+              <p class="text-xs text-stone-400">Cryptographically recorded administrative activity & database operations</p>
+            </div>
+            <button onclick="loadAdminAuditTrail()" class="px-2.5 py-1 bg-stone-900 text-white rounded-lg text-xs font-semibold">
+              <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Logs
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-stone-50 text-stone-600 border-b">
+                <tr>
+                  <th class="p-3">Timestamp</th>
+                  <th class="p-3">Actor</th>
+                  <th class="p-3">Action</th>
+                  <th class="p-3">Target Entity</th>
+                  <th class="p-3">Details / Modifications</th>
+                  <th class="p-3">IP Address</th>
+                </tr>
+              </thead>
+              <tbody id="admin-audit-body" class="divide-y divide-stone-100 font-mono"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </main>
-
-  <!-- ======================================================== -->
-  <!-- MOBILE BOTTOM NAVIGATION DOCK (Native App Feel)          -->
-  <!-- ======================================================== -->
-  <nav class="sm:hidden fixed bottom-0 inset-x-0 bg-stone-900/95 backdrop-blur-md border-t border-stone-800 text-stone-300 z-50 px-2 py-1.5 flex justify-around text-center">
-    <button onclick="showSection('customer-store')" class="flex flex-col items-center py-1 px-3 text-[11px] hover:text-white">
-      <i class="fa-solid fa-store text-base mb-0.5"></i>
-      <span>Store</span>
-    </button>
-    <button onclick="showSection('customer-auth')" class="flex flex-col items-center py-1 px-3 text-[11px] text-amber-400 font-semibold">
-      <i class="fa-solid fa-user text-base mb-0.5"></i>
-      <span>Customer</span>
-    </button>
-    <button onclick="showSection('staff-login')" class="flex flex-col items-center py-1 px-3 text-[11px] hover:text-white">
-      <i class="fa-solid fa-kitchen-set text-base mb-0.5"></i>
-      <span>Staff</span>
-    </button>
-    <button onclick="showSection('rider-login')" class="flex flex-col items-center py-1 px-3 text-[11px] hover:text-white">
-      <i class="fa-solid fa-motorcycle text-base mb-0.5"></i>
-      <span>Rider</span>
-    </button>
-    <button onclick="showSection('admin-login')" class="flex flex-col items-center py-1 px-3 text-[11px] hover:text-white">
-      <i class="fa-solid fa-shield-halved text-base mb-0.5"></i>
-      <span>Admin</span>
-    </button>
-  </nav>
 
   <script>
     let currentUser = JSON.parse(localStorage.getItem('iq_user') || 'null');
     let authToken = localStorage.getItem('iq_token') || null;
     let cart = {};
     let latestGeneratedCredentials = null;
-    let isCustomerSignUp = true; // Default to Customer Sign Up
+    let isCustomerSignUp = false;
 
-    const BAKERY_ITEMS = [
+    // Default Catalog Fallback
+    let BAKERY_ITEMS = [
       { id: 'cake-1', name: 'Belgian Chocolate Truffle Cake (1kg)', price: 30.00, img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
       { id: 'cake-2', name: 'Madagascar Bourbon Vanilla (1kg)', price: 26.00, img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=500' },
       { id: 'cake-3', name: 'French Macaron Gift Collection (12pcs)', price: 18.00, img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' }
     ];
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration error:', err));
-      });
-    }
+    // ROUTING
+    function navigateTo(sectionId) { window.location.hash = sectionId; }
 
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const installBtn = document.getElementById('pwa-install-btn');
-      if (installBtn) {
-        installBtn.classList.remove('hidden');
-        installBtn.addEventListener('click', async () => {
-          if (deferredPrompt) {
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-            installBtn.classList.add('hidden');
-          }
-        });
-      }
-    });
-
-    function togglePasswordVisibility(inputId, iconId) {
-      const input = document.getElementById(inputId);
-      const icon = document.getElementById(iconId);
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.replace('fa-eye', 'fa-eye-slash');
-      } else {
-        input.type = 'password';
-        icon.classList.replace('fa-eye-slash', 'fa-eye');
-      }
-    }
-
-    function toggleCustomerAuthMode() {
-      isCustomerSignUp = !isCustomerSignUp;
-      document.getElementById('cust-auth-title').innerText = isCustomerSignUp ? 'Create Customer Account' : 'Welcome Back';
-      document.getElementById('cust-auth-subtitle').innerText = isCustomerSignUp 
-        ? 'Unlock fast checkout, delivery tracking & secret order PINs' 
-        : 'Sign in to access your orders and real-time delivery status';
-      document.getElementById('cust-auth-btn').innerHTML = isCustomerSignUp ? '<span>Create Account</span> <i class="fa-solid fa-arrow-right text-xs"></i>' : '<span>Sign In</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
-      document.getElementById('cust-auth-icon').className = isCustomerSignUp ? 'fa-solid fa-user-plus' : 'fa-solid fa-arrow-right-to-bracket';
+    function showSection(sectionId) {
+      const validSections = [
+        'customer-store', 'customer-auth', 'staff-login', 
+        'rider-login', 'admin-login', 'dispatch-dashboard', 
+        'rider-dashboard', 'admin-dashboard'
+      ];
       
-      document.getElementById('field-signup-name').classList.toggle('hidden', !isCustomerSignUp);
-      document.getElementById('field-signup-phone').classList.toggle('hidden', !isCustomerSignUp);
-      document.getElementById('cust-auth-toggle').innerText = isCustomerSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up";
+      const target = validSections.includes(sectionId) ? sectionId : 'customer-store';
+      validSections.forEach(s => {
+        const el = document.getElementById(`sec-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+
+      const activeEl = document.getElementById(`sec-${target}`);
+      if (activeEl) activeEl.classList.remove('hidden');
+
+      if (target === 'dispatch-dashboard') loadDispatchQueue();
+      if (target === 'rider-dashboard') loadRiderTasks();
+      if (target === 'admin-dashboard') switchAdminTab('users');
+    }
+
+    function syncRoute() {
+      const path = window.location.pathname.replace(/^\//, '');
+      const hash = window.location.hash.replace(/^#/, '');
+      const route = hash || path || 'customer-store';
+      showSection(route);
+    }
+
+    window.addEventListener('hashchange', syncRoute);
+    window.addEventListener('popstate', syncRoute);
+
+    function updateAuthDisplay() {
+      const sessionArea = document.getElementById('user-session-area');
+      if (!sessionArea) return;
+
+      if (!currentUser || !authToken) {
+        sessionArea.classList.add('hidden');
+        sessionArea.innerHTML = '';
+      } else {
+        sessionArea.classList.remove('hidden');
+        let roleBadge = `<span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] uppercase font-mono">${currentUser.role}</span>`;
+        let dashboardBtn = '';
+        if (currentUser.role === 'admin') dashboardBtn = `<button onclick="navigateTo('admin-dashboard')" class="text-amber-400 font-bold hover:underline">Admin Console</button>`;
+        if (currentUser.role === 'staff') dashboardBtn = `<button onclick="navigateTo('dispatch-dashboard')" class="text-amber-400 font-bold hover:underline">Kitchen Queue</button>`;
+        if (currentUser.role === 'driver') dashboardBtn = `<button onclick="navigateTo('rider-dashboard')" class="text-amber-400 font-bold hover:underline">Tasks</button>`;
+
+        sessionArea.innerHTML = `
+          <span class="text-stone-300 hidden sm:inline">${currentUser.name} (${roleBadge})</span>
+          ${dashboardBtn}
+          <button onclick="handleLogout()" title="Sign Out" class="text-stone-400 hover:text-red-400 ml-1">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
+        `;
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('iq_token');
+      localStorage.removeItem('iq_user');
+      currentUser = null;
+      authToken = null;
+      updateAuthDisplay();
+      navigateTo('customer-store');
+    }
+
+    // AUTH CONTROLLERS
+    function setCustomerAuthMode(signUpMode) {
+      isCustomerSignUp = signUpMode;
+      const tabLogin = document.getElementById('tab-login');
+      const tabSignup = document.getElementById('tab-signup');
+      const title = document.getElementById('cust-auth-title');
+      const subtitle = document.getElementById('cust-auth-subtitle');
+      const btn = document.getElementById('cust-auth-btn');
+      const nameField = document.getElementById('field-signup-name');
+      const phoneField = document.getElementById('field-signup-phone');
+
+      if (isCustomerSignUp) {
+        tabSignup.className = "py-2 rounded-xl transition bg-white text-stone-900 shadow-sm";
+        tabLogin.className = "py-2 rounded-xl transition text-stone-500 hover:text-stone-900";
+        title.innerText = "Create Your Account";
+        subtitle.innerText = "Join The IQ Bakery for fast confectionery ordering and order tracking";
+        btn.innerHTML = `<span>Create Account</span> <i class="fa-solid fa-user-plus text-[11px]"></i>`;
+        nameField.classList.remove('hidden');
+        phoneField.classList.remove('hidden');
+      } else {
+        tabLogin.className = "py-2 rounded-xl transition bg-white text-stone-900 shadow-sm";
+        tabSignup.className = "py-2 rounded-xl transition text-stone-500 hover:text-stone-900";
+        title.innerText = "Welcome Back";
+        subtitle.innerText = "Sign in to track orders and save your favorite confections";
+        btn.innerHTML = `<span>Sign In to Bakery</span> <i class="fa-solid fa-arrow-right text-[11px]"></i>`;
+        nameField.classList.add('hidden');
+        phoneField.classList.add('hidden');
+      }
     }
 
     async function submitCustomerAuth(e) {
@@ -528,12 +740,8 @@
       const email = document.getElementById('cust-email-input').value.trim();
       const password = document.getElementById('cust-pass-input').value;
       const endpoint = isCustomerSignUp ? '/api/v1/auth/customer/signup' : '/api/v1/auth/customer/login';
-      
-      let rawPhone = document.getElementById('cust-phone-input').value.trim().replace(/^0/, '');
-      const phone = rawPhone ? `+256${rawPhone}` : null;
-
       const body = isCustomerSignUp 
-        ? { email, password, name: document.getElementById('cust-name-input').value.trim(), phone }
+        ? { email, password, name: document.getElementById('cust-name-input').value.trim(), phone: document.getElementById('cust-phone-input').value.trim() }
         : { email, password };
 
       try {
@@ -546,81 +754,10 @@
         if (!res.ok) throw new Error(data.error);
 
         saveAuthSession(data.token, data.user);
-        showSection('customer-store');
+        navigateTo('customer-store');
       } catch (err) {
         alert(err.message);
       }
-    }
-
-    function cleanSudoInput(raw) {
-      return (raw || '')
-        .trim()
-        .toLowerCase()
-        .replace(/@.*$/, '')
-        .replace(/\.?theiqstore\.com/gi, '')
-        .replace(/[^a-z0-9.]/g, '.')
-        .replace(/\.+/g, '.')
-        .replace(/^\.|\.$/g, '');
-    }
-
-    function updateEmailPreview(val) {
-      const sanitized = cleanSudoInput(val);
-      document.getElementById('emp-email-preview').innerText = `${sanitized || 'username'}@theiqstore.com`;
-    }
-
-    function toggleVehicleField() {
-      const role = document.getElementById('emp-role').value;
-      document.getElementById('emp-vehicle-wrapper').classList.toggle('hidden', role !== 'driver');
-    }
-
-    function togglePayInputs() {
-      const method = document.querySelector('input[name="pay-method"]:checked').value;
-      document.getElementById('momo-input-box').classList.toggle('hidden', method !== 'mobile_money');
-    }
-
-    function showSection(sectionId) {
-      const sections = [
-        'customer-store', 'customer-auth', 'staff-login', 
-        'rider-login', 'admin-login', 'dispatch-dashboard', 
-        'rider-dashboard', 'admin-dashboard'
-      ];
-      sections.forEach(s => document.getElementById(`sec-${s}`).classList.add('hidden'));
-      document.getElementById(`sec-${sectionId}`).classList.remove('hidden');
-
-      if (sectionId === 'dispatch-dashboard') loadDispatchQueue();
-      if (sectionId === 'rider-dashboard') loadRiderTasks();
-      if (sectionId === 'admin-dashboard') loadAdminDashboardData();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function checkAuthState() {
-      const navArea = document.getElementById('auth-nav-area');
-      if (!currentUser || !authToken) {
-        navArea.innerHTML = `
-          <button onclick="showSection('customer-auth')" class="px-2.5 py-1 rounded-lg bg-amber-600 text-white font-bold text-xs shadow-sm">Sign In</button>
-        `;
-      } else {
-        let roleBadge = `<span class="bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded text-[10px] uppercase font-mono">${currentUser.role}</span>`;
-        let dashboardBtn = '';
-        if (currentUser.role === 'admin') dashboardBtn = `<button onclick="showSection('admin-dashboard')" class="text-amber-400 font-bold ml-1">Admin</button>`;
-        if (currentUser.role === 'staff') dashboardBtn = `<button onclick="showSection('dispatch-dashboard')" class="text-amber-400 font-bold ml-1">Kitchen</button>`;
-        if (currentUser.role === 'driver') dashboardBtn = `<button onclick="showSection('rider-dashboard')" class="text-amber-400 font-bold ml-1">Tasks</button>`;
-
-        navArea.innerHTML = `
-          <span class="text-stone-300 hidden md:inline text-xs">${currentUser.name} (${roleBadge})</span>
-          ${dashboardBtn}
-          <button onclick="handleLogout()" class="text-stone-400 hover:text-red-400 ml-1.5"><i class="fa-solid fa-power-off"></i></button>
-        `;
-      }
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('iq_token');
-      localStorage.removeItem('iq_user');
-      currentUser = null;
-      authToken = null;
-      checkAuthState();
-      showSection('customer-store');
     }
 
     async function submitRoleLogin(e, role) {
@@ -638,9 +775,9 @@
         if (!res.ok) throw new Error(data.error);
 
         saveAuthSession(data.token, data.user);
-        if (data.user.role === 'admin') showSection('admin-dashboard');
-        else if (data.user.role === 'staff') showSection('dispatch-dashboard');
-        else if (data.user.role === 'driver') showSection('rider-dashboard');
+        if (data.user.role === 'admin') navigateTo('admin-dashboard');
+        else if (data.user.role === 'staff') navigateTo('dispatch-dashboard');
+        else if (data.user.role === 'driver') navigateTo('rider-dashboard');
       } catch (err) {
         alert(err.message);
       }
@@ -651,51 +788,79 @@
       localStorage.setItem('iq_user', JSON.stringify(user));
       authToken = token;
       currentUser = user;
-      checkAuthState();
+      updateAuthDisplay();
+    }
+
+    // ==========================================
+    // ADMIN TAB SWITCHER & CONTROLLERS
+    // ==========================================
+    function switchAdminTab(tab) {
+      ['users', 'products', 'accounts', 'audit'].forEach(t => {
+        const panel = document.getElementById(`admin-panel-${t}`);
+        const btn = document.getElementById(`admin-tab-${t}`);
+        if (panel) panel.classList.toggle('hidden', t !== tab);
+        if (btn) {
+          if (t === tab) btn.className = "px-3.5 py-1.5 rounded-xl transition bg-white text-stone-900 shadow-sm";
+          else btn.className = "px-3.5 py-1.5 rounded-xl transition text-stone-600 hover:text-stone-900";
+        }
+      });
+
+      if (tab === 'users') loadAdminUsers();
+      if (tab === 'products') loadAdminProducts();
+      if (tab === 'accounts') loadAdminAccounts();
+      if (tab === 'audit') loadAdminAuditTrail();
+    }
+
+    // 1. ADMIN: USERS CRUD
+    function cleanSudoInput(raw) {
+      return (raw || '').trim().toLowerCase().replace(/@.*$/, '').replace(/\.?theiqstore\.com/gi, '').replace(/[^a-z0-9.]/g, '.').replace(/\.+/g, '.').replace(/^\.|\.$/g, '');
+    }
+
+    function updateEmailPreview(val) {
+      const sanitized = cleanSudoInput(val);
+      document.getElementById('emp-email-preview').innerText = `${sanitized || 'username'}@theiqstore.com`;
+    }
+
+    function toggleVehicleField() {
+      const role = document.getElementById('emp-role').value;
+      document.getElementById('emp-vehicle-wrapper').classList.toggle('hidden', role !== 'driver');
+    }
+
+    function generateRandomPassword() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+      let pass = '';
+      for (let i = 0; i < 9; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      document.getElementById('emp-pass').value = pass;
     }
 
     async function handleCreateEmployee(e) {
       e.preventDefault();
       const role = document.getElementById('emp-role').value;
       const name = document.getElementById('emp-name').value;
-      const rawSudo = document.getElementById('emp-sudo').value;
-      const cleanSudo = cleanSudoInput(rawSudo);
+      const cleanSudo = cleanSudoInput(document.getElementById('emp-sudo').value);
       const password = document.getElementById('emp-pass').value;
+      const phone = document.getElementById('emp-phone').value;
       const vehicle = document.getElementById('emp-vehicle').value;
 
       try {
         const res = await fetch(`/api/v1/auth/admin/create-employee`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${authToken}`
-          },
-          body: JSON.stringify({
-            role,
-            name,
-            sudo_name: cleanSudo,
-            password,
-            vehicle_info: vehicle
-          })
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+          body: JSON.stringify({ role, name, sudo_name: cleanSudo, password, phone, vehicle_info: vehicle })
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        latestGeneratedCredentials = {
-          email: data.generated_email,
-          password: data.raw_password,
-          role: role === 'driver' ? 'Rider' : 'Staff',
-          name: name
-        };
-
+        latestGeneratedCredentials = { email: data.generated_email, password: data.raw_password, role: role === 'driver' ? 'Rider / Courier' : 'Kitchen Dispatch Staff', name: name };
         document.getElementById('credential-share-card').classList.remove('hidden');
         document.getElementById('card-email').innerText = data.generated_email;
         document.getElementById('card-pass').innerText = data.raw_password;
+        document.getElementById('card-role').innerText = latestGeneratedCredentials.role;
 
         e.target.reset();
         toggleVehicleField();
         updateEmailPreview('');
-        loadAdminDashboardData();
+        loadAdminUsers();
       } catch (err) {
         alert(err.message);
       }
@@ -703,27 +868,25 @@
 
     function copyGeneratedCredentials() {
       if (!latestGeneratedCredentials) return;
-      const text = `TheIQstore Login:\nRole: ${latestGeneratedCredentials.role}\nEmail: ${latestGeneratedCredentials.email}\nPassword: ${latestGeneratedCredentials.password}\nPortal: ${window.location.origin}`;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Credentials copied to clipboard!");
-      });
+      const text = `TheIQstore Login Credentials:\nRole: ${latestGeneratedCredentials.role}\nName: ${latestGeneratedCredentials.name}\nEmail: ${latestGeneratedCredentials.email}\nPassword: ${latestGeneratedCredentials.password}\nPortal: ${window.location.origin}/#${latestGeneratedCredentials.role === 'Rider / Courier' ? 'rider-login' : 'staff-login'}`;
+      navigator.clipboard.writeText(text).then(() => alert("Credentials copied to clipboard!"));
     }
 
-    async function loadAdminDashboardData() {
+    async function loadAdminUsers() {
       const tbody = document.getElementById('admin-roster-body');
+      const roleFilter = document.getElementById('user-filter-role').value;
       try {
-        const res = await fetch(`/api/v1/auth/admin/employees`, {
-          headers: { 'Authorization': `Bearer ${authToken}` }
-        });
+        const url = roleFilter ? `/api/v1/admin/users?role=${roleFilter}` : '/api/v1/admin/users';
+        const res = await fetch(url, { headers: { 'Authorization': `Bearer ${authToken}` } });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        const employees = data.employees || [];
+        const users = data.users || [];
         let couriers = 0, staff = 0, active = 0, inactive = 0;
-        employees.forEach(e => {
-          if (e.role === 'driver') couriers++;
-          if (e.role === 'staff') staff++;
-          if (e.is_active !== false) active++;
+        users.forEach(u => {
+          if (u.role === 'driver') couriers++;
+          if (u.role === 'staff') staff++;
+          if (u.is_active !== false) active++;
           else inactive++;
         });
 
@@ -732,33 +895,298 @@
         document.getElementById('metric-active-count').innerText = active;
         document.getElementById('metric-inactive-count').innerText = inactive;
 
-        tbody.innerHTML = employees.map(emp => `
+        if (users.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-stone-400">No accounts found.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = users.map(u => `
           <tr class="hover:bg-stone-50">
-            <td class="p-3 font-bold text-stone-900">${emp.name}</td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded font-bold uppercase text-[10px] ${emp.role === 'driver' ? 'bg-amber-100 text-amber-800' : 'bg-stone-100 text-stone-800'}">${emp.role}</span></td>
-            <td class="p-3 font-mono font-bold text-amber-700">${emp.email}</td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${emp.is_active !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${emp.is_active !== false ? 'Active' : 'Suspended'}</span></td>
-            <td class="p-3 text-right">
-              <button onclick="toggleEmployeeStatus('${emp.id}')" class="font-bold text-[11px] ${emp.is_active !== false ? 'text-rose-600' : 'text-emerald-600'}">
-                ${emp.is_active !== false ? 'Deactivate' : 'Activate'}
-              </button>
+            <td class="p-3">
+              <p class="font-bold text-stone-900">${u.name}</p>
+              <p class="text-stone-400 text-[11px]">${u.phone || 'No phone'}</p>
+            </td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded font-bold uppercase text-[10px] ${u.role === 'driver' ? 'bg-amber-100 text-amber-800' : u.role === 'staff' ? 'bg-stone-100 text-stone-800' : 'bg-blue-100 text-blue-800'}">
+                ${u.role}
+              </span>
+            </td>
+            <td class="p-3 font-mono font-bold text-amber-700">${u.email}</td>
+            <td class="p-3 text-stone-600">${u.vehicle_info || '—'}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${u.is_active !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${u.is_active !== false ? 'Active' : 'Suspended'}
+              </span>
+            </td>
+            <td class="p-3 text-right space-x-1 whitespace-nowrap">
+              <button onclick="editUserPrompt('${u.id}', '${u.name}', '${u.phone || ''}', '${u.vehicle_info || ''}')" title="Edit User" class="p-1 text-stone-600 hover:text-stone-900"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="toggleUserStatus('${u.id}', ${u.is_active !== false})" title="${u.is_active !== false ? 'Suspend' : 'Activate'}" class="p-1 ${u.is_active !== false ? 'text-rose-600' : 'text-emerald-600'}"><i class="fa-solid fa-power-off"></i></button>
+              <button onclick="deleteUser('${u.id}', '${u.name}')" title="Delete User" class="p-1 text-stone-400 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>
-        `).join('') || `<tr><td colspan="5" class="p-4 text-center text-stone-400">No personnel registered yet.</td></tr>`;
+        `).join('');
       } catch (err) {
-        console.error(err);
+        console.error('Error loading users:', err);
       }
     }
 
-    async function toggleEmployeeStatus(id) {
-      if (!confirm("Toggle active status for this employee?")) return;
-      const res = await fetch(`/api/v1/auth/admin/employees/${id}/toggle-status`, {
-        method: 'PATCH',
-        headers: { 'Authorization': `Bearer ${authToken}` }
-      });
-      loadAdminDashboardData();
+    async function editUserPrompt(id, currentName, currentPhone, currentVehicle) {
+      const newName = prompt("Update Legal Name:", currentName);
+      if (newName === null) return;
+      const newPhone = prompt("Update Contact Phone:", currentPhone);
+      if (newPhone === null) return;
+      const newVehicle = prompt("Update Vehicle Info (couriers only):", currentVehicle);
+      if (newVehicle === null) return;
+      const resetPass = prompt("Set new password (leave blank to keep current):", "");
+
+      try {
+        const res = await fetch(`/api/v1/admin/users/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+          body: JSON.stringify({ name: newName, phone: newPhone, vehicle_info: newVehicle, password: resetPass || undefined })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        alert("User details updated successfully!");
+        loadAdminUsers();
+      } catch (err) {
+        alert(err.message);
+      }
     }
 
+    async function toggleUserStatus(id, currentIsActive) {
+      try {
+        const res = await fetch(`/api/v1/admin/users/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+          body: JSON.stringify({ is_active: !currentIsActive })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        loadAdminUsers();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function deleteUser(id, name) {
+      if (!confirm(`Are you certain you want to permanently delete ${name}? This action is logged.`)) return;
+      try {
+        const res = await fetch(`/api/v1/admin/users/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        alert(data.message);
+        loadAdminUsers();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // 2. ADMIN: PRODUCTS CRUD
+    async function loadAdminProducts() {
+      const tbody = document.getElementById('admin-products-body');
+      try {
+        const res = await fetch(`/api/v1/admin/products`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        const products = data.products || [];
+        if (products.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-stone-400">No products configured yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = products.map(p => `
+          <tr class="hover:bg-stone-50">
+            <td class="p-3 flex items-center gap-2">
+              <img src="${p.image_url || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=100'}" class="w-8 h-8 rounded-lg object-cover" />
+              <div>
+                <p class="font-bold text-stone-900">${p.title}</p>
+                <p class="text-[10px] text-stone-400 truncate max-w-xs">${p.description || ''}</p>
+              </div>
+            </td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800">${p.category || 'Cakes'}</span></td>
+            <td class="p-3 font-mono font-bold text-stone-800">$${parseFloat(p.price).toFixed(2)}</td>
+            <td class="p-3 font-mono">${p.stock}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${p.is_available ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-200 text-stone-600'}">
+                ${p.is_available ? 'Available' : 'Hidden'}
+              </span>
+            </td>
+            <td class="p-3 text-right space-x-1 whitespace-nowrap">
+              <button onclick='editProductForm(${JSON.stringify(p)})' title="Edit Product" class="p-1 text-stone-600 hover:text-amber-700"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="toggleProductAvailability('${p.id}', ${p.is_available})" title="Toggle Visibility" class="p-1 text-stone-600 hover:text-stone-900"><i class="fa-solid fa-eye-slash"></i></button>
+              <button onclick="deleteProduct('${p.id}', '${p.title}')" title="Delete Product" class="p-1 text-stone-400 hover:text-rose-700"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading products:', err);
+      }
+    }
+
+    async function handleSaveProduct(e) {
+      e.preventDefault();
+      const id = document.getElementById('prod-id').value;
+      const payload = {
+        title: document.getElementById('prod-title').value.trim(),
+        price: parseFloat(document.getElementById('prod-price').value),
+        stock: parseInt(document.getElementById('prod-stock').value) || 0,
+        category: document.getElementById('prod-category').value,
+        image_url: document.getElementById('prod-image').value.trim() || null,
+        description: document.getElementById('prod-desc').value.trim()
+      };
+
+      try {
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/api/v1/admin/products/${id}` : '/api/v1/admin/products';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        resetProductForm();
+        loadAdminProducts();
+        initStore();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function editProductForm(p) {
+      document.getElementById('product-form-title').innerText = "Edit Confectionery Item";
+      document.getElementById('prod-id').value = p.id;
+      document.getElementById('prod-title').value = p.title;
+      document.getElementById('prod-price').value = p.price;
+      document.getElementById('prod-stock').value = p.stock;
+      document.getElementById('prod-category').value = p.category || 'Cakes';
+      document.getElementById('prod-image').value = p.image_url || '';
+      document.getElementById('prod-desc').value = p.description || '';
+      document.getElementById('btn-save-product').innerText = "Update Product";
+      document.getElementById('btn-cancel-edit').classList.remove('hidden');
+    }
+
+    function resetProductForm() {
+      document.getElementById('product-form-title').innerText = "Add New Specialty Cake";
+      document.getElementById('product-form').reset();
+      document.getElementById('prod-id').value = '';
+      document.getElementById('btn-save-product').innerText = "Save Product";
+      document.getElementById('btn-cancel-edit').classList.add('hidden');
+    }
+
+    async function toggleProductAvailability(id, currentAvail) {
+      try {
+        const res = await fetch(`/api/v1/admin/products/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+          body: JSON.stringify({ is_available: !currentAvail })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        loadAdminProducts();
+        initStore();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    async function deleteProduct(id, title) {
+      if (!confirm(`Are you certain you want to delete ${title}?`)) return;
+      try {
+        const res = await fetch(`/api/v1/admin/products/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        loadAdminProducts();
+        initStore();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // 3. ADMIN: ACCOUNTS & LEDGER
+    async function loadAdminAccounts() {
+      const tbody = document.getElementById('admin-accounts-body');
+      try {
+        const res = await fetch(`/api/v1/admin/accounts`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        const summary = data.summary || {};
+        document.getElementById('acc-gross-rev').innerText = `$${parseFloat(summary.gross_revenue || 0).toFixed(2)}`;
+        document.getElementById('acc-cash-rev').innerText = `$${parseFloat(summary.cash_collected || 0).toFixed(2)}`;
+        document.getElementById('acc-momo-rev').innerText = `$${parseFloat(summary.momo_collected || 0).toFixed(2)}`;
+        document.getElementById('acc-pending-rev').innerText = `$${parseFloat(summary.pending_settlement || 0).toFixed(2)}`;
+
+        const txs = data.transactions || [];
+        if (txs.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-400">No transactions recorded yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = txs.map(t => `
+          <tr class="hover:bg-stone-50 font-mono">
+            <td class="p-3 font-bold text-amber-700">${t.tracking_code || 'N/A'}</td>
+            <td class="p-3 font-sans font-semibold text-stone-800">${t.customer_name || 'Guest/Walk-in'}</td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded font-bold text-[10px] ${t.payment_method === 'mobile_money' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                ${t.payment_method === 'mobile_money' ? 'MOMO' : 'COD (Cash)'}
+              </span>
+            </td>
+            <td class="p-3 font-bold text-stone-900">$${parseFloat(t.total_amount).toFixed(2)}</td>
+            <td class="p-3 font-sans">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.payment_status.includes('paid') || t.payment_status.includes('confirmed') ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">
+                ${t.payment_status}
+              </span>
+            </td>
+            <td class="p-3 font-sans">${t.delivery_status || 'unassigned'}</td>
+            <td class="p-3 text-[10px] text-stone-500">${new Date(t.created_at).toLocaleString()}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading accounts:', err);
+      }
+    }
+
+    // 4. ADMIN: AUDIT TRAIL
+    async function loadAdminAuditTrail() {
+      const tbody = document.getElementById('admin-audit-body');
+      try {
+        const res = await fetch(`/api/v1/admin/audit-trail`, { headers: { 'Authorization': `Bearer ${authToken}` } });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        const logs = data.logs || [];
+        if (logs.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-stone-400 font-sans">No audit logs recorded yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = logs.map(l => `
+          <tr class="hover:bg-stone-50">
+            <td class="p-3 text-[11px] text-stone-500">${new Date(l.created_at).toLocaleTimeString()}</td>
+            <td class="p-3 text-stone-800 font-bold">${l.actor_name} <span class="text-stone-400 font-normal">(${l.actor_role})</span></td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded bg-stone-100 text-stone-800 font-bold text-[10px]">${l.action}</span></td>
+            <td class="p-3 text-amber-700 uppercase font-semibold text-[10px]">${l.entity_type} #${String(l.entity_id).substring(0,8)}</td>
+            <td class="p-3 text-[11px] text-stone-600 truncate max-w-xs">${JSON.stringify(l.details || {})}</td>
+            <td class="p-3 text-[10px] text-stone-400">${l.ip_address || '—'}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading audit trail:', err);
+      }
+    }
+
+    // DISPATCH QUEUE & RIDER OPERATIONS
     async function loadDispatchQueue() {
       const tbody = document.getElementById('dispatch-table-body');
       try {
@@ -773,15 +1201,24 @@
         tbody.innerHTML = (ordersData.deliveries || []).map(o => `
           <tr class="hover:bg-stone-50">
             <td class="p-3 font-mono font-bold text-amber-700">${o.tracking_code}</td>
-            <td class="p-3"><p class="font-bold text-stone-800">${o.recipient_name}</p><p class="text-stone-400 text-[11px]">${o.shipping_address}</p></td>
-            <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${o.payment_method === 'mobile_money' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${o.payment_method === 'mobile_money' ? 'MoMo' : 'Cash'}</span></td>
-            <td class="p-3 font-mono font-bold text-stone-900 bg-amber-50/50">${o.pickup_pin || 'N/A'}</td>
+            <td class="p-3">
+              <p class="font-bold text-stone-800">${o.recipient_name}</p>
+              <p class="text-stone-500">${o.shipping_address}</p>
+            </td>
+            <td class="p-3">
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold ${o.payment_method === 'mobile_money' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                ${o.payment_method === 'mobile_money' ? 'Mobile Money' : 'Cash on Delivery'}
+              </span>
+            </td>
+            <td class="p-3 font-mono font-bold text-stone-900 bg-amber-50/50">
+              ${o.pickup_pin ? `<span class="bg-amber-200/80 text-amber-900 px-2 py-1 rounded text-xs tracking-wider">${o.pickup_pin}</span>` : 'N/A'}
+            </td>
             <td class="p-3"><span class="px-2 py-0.5 rounded font-bold ${o.delivery_status === 'delivered' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.delivery_status}</span></td>
             <td class="p-3">
               ${o.driver_name ? `<span class="font-semibold text-stone-700">${o.driver_name}</span>` : `
                 <select onchange="assignRider('${o.tracking_code}', this.value)" class="border px-2 py-1 rounded text-xs">
-                  <option value="">-- Assign Rider --</option>
-                  ${riders.map(r => `<option value="${r.id}">${r.name}</option>`).join('')}
+                  <option value="">-- Choose Rider --</option>
+                  ${riders.map(r => `<option value="${r.id}">${r.name} (${r.vehicle_info || 'Bike'})</option>`).join('')}
                 </select>
               `}
             </td>
@@ -816,22 +1253,22 @@
         }
 
         container.innerHTML = tasks.map(t => `
-          <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2.5">
+          <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
             <div class="flex justify-between items-center">
               <span class="font-mono font-bold text-amber-700">${t.tracking_code}</span>
-              <span class="px-2 py-0.5 text-[11px] rounded font-bold ${t.payment_method === 'cash' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                Collect: ${t.payment_method === 'cash' ? `$${t.total_amount} CASH` : 'PAID (MoMo)'}
+              <span class="px-2 py-0.5 text-xs rounded font-bold ${t.payment_method === 'cash' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                Collect: ${t.payment_method === 'cash' ? `$${t.total_amount} CASH` : 'PAID (Mobile Money)'}
               </span>
             </div>
             <p class="font-bold text-stone-800 text-sm">${t.recipient_name} (${t.recipient_phone})</p>
             <p class="text-xs text-stone-500">${t.shipping_address}</p>
-            <div class="pt-1">
+            <div class="flex gap-2 pt-2">
               ${t.delivery_status === 'assigned' ? `
-                <button onclick="promptRiderPin('${t.tracking_code}', 'in_transit')" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
+                <button onclick="promptRiderPin('${t.tracking_code}', 'in_transit')" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
                   <i class="fa-solid fa-key"></i> Confirm Pickup (Enter Store PIN)
                 </button>
               ` : `
-                <button onclick="promptRiderPin('${t.tracking_code}', 'delivered')" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
+                <button onclick="promptRiderPin('${t.tracking_code}', 'delivered')" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5">
                   <i class="fa-solid fa-signature"></i> Confirm Dropoff (Enter Customer PIN)
                 </button>
               `}
@@ -844,32 +1281,67 @@
     }
 
     async function promptRiderPin(trackingCode, targetStatus) {
-      const pin = prompt(targetStatus === 'in_transit' ? "Enter Store Pickup PIN:" : "Enter Customer Delivery PIN:");
+      const promptMsg = targetStatus === 'in_transit' ? "Enter Store Pickup PIN (from Kitchen Staff):" : "Enter Customer Delivery PIN (from Customer):";
+      const pin = prompt(promptMsg);
       if (!pin) return;
 
-      const res = await fetch(`/api/v1/deliveries/rider/update-status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
-        body: JSON.stringify({ tracking_code: trackingCode, status: targetStatus, pin: pin.trim() })
-      });
-      const data = await res.json();
-      if (!res.ok) return alert(`Verification Failed: ${data.error || 'Invalid PIN'}`);
-      loadRiderTasks();
+      try {
+        const res = await fetch(`/api/v1/deliveries/rider/update-status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+          body: JSON.stringify({ 
+            tracking_code: trackingCode, 
+            status: targetStatus, 
+            pin: pin.trim(), 
+            proof_of_delivery: targetStatus === 'delivered' ? 'Customer PIN verified at handoff' : null 
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          alert(`Verification Failed: ${data.error || 'Invalid PIN'}`);
+          return;
+        }
+
+        alert(targetStatus === 'in_transit' ? 'Pickup verified! Order In Transit.' : 'Drop-off verified! Delivery Complete.');
+        loadRiderTasks();
+      } catch (err) {
+        alert('Network error.');
+      }
     }
 
-    function initStore() {
+    function togglePayInputs() {
+      const method = document.querySelector('input[name="pay-method"]:checked').value;
+      document.getElementById('momo-input-box').classList.toggle('hidden', method !== 'mobile_money');
+    }
+
+    // PUBLIC CATALOG INITIALIZATION
+    async function initStore() {
       const grid = document.getElementById('catalog-grid');
+      try {
+        const res = await fetch('/api/v1/public/products');
+        const data = await res.json();
+        if (data.products && data.products.length > 0) {
+          BAKERY_ITEMS = data.products.map(p => ({
+            id: p.id,
+            name: p.title,
+            price: parseFloat(p.price),
+            img: p.image_url || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500'
+          }));
+        }
+      } catch (e) {
+        console.log('Using default product fallback catalog.');
+      }
+
       grid.innerHTML = BAKERY_ITEMS.map(item => `
         <div class="bg-white border rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
-          <img src="${item.img}" class="h-36 sm:h-40 w-full object-cover" />
-          <div class="p-3.5 space-y-2">
-            <div class="flex justify-between items-start">
-              <h4 class="font-bold text-xs sm:text-sm line-clamp-1">${item.name}</h4>
-              <span class="font-mono font-bold text-amber-700 text-xs sm:text-sm">$${item.price.toFixed(2)}</span>
+          <img src="${item.img}" class="h-40 w-full object-cover" />
+          <div class="p-4 space-y-2">
+            <div class="flex justify-between">
+              <h4 class="font-bold text-sm">${item.name}</h4>
+              <span class="font-mono font-bold text-amber-700 text-sm">$${item.price.toFixed(2)}</span>
             </div>
-            <button onclick="addToCart('${item.id}')" class="w-full py-2 bg-stone-100 active:bg-amber-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold transition">
-              Add to Basket
-            </button>
+            <button onclick="addToCart('${item.id}')" class="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">Add to Basket</button>
           </div>
         </div>
       `).join('');
@@ -885,6 +1357,7 @@
       let subtotal = 0;
       list.innerHTML = Object.keys(cart).map(id => {
         const item = BAKERY_ITEMS.find(i => i.id === id);
+        if (!item) return '';
         const qty = cart[id];
         subtotal += item.price * qty;
         return `<div class="flex justify-between py-1.5"><span>${item.name} × ${qty}</span><span class="font-bold">$${(item.price * qty).toFixed(2)}</span></div>`;
@@ -896,20 +1369,20 @@
 
     async function handleCustomerCheckout() {
       if (!currentUser || currentUser.role !== 'customer') {
-        alert("Please login or create an account to proceed with checkout.");
-        showSection('customer-auth');
+        alert("Please login or create a customer account before placing an order.");
+        navigateTo('customer-auth');
         return;
       }
       if (Object.keys(cart).length === 0) return alert("Your basket is empty.");
 
-      const address = prompt("Delivery address in Kampala:", "Plot 14 Kampala Road, Suite 3B");
+      const address = prompt("Confirm your delivery address:", "Plot 14 Kampala Road, Suite 3B");
       if (!address) return;
 
       const paymentMethod = document.querySelector('input[name="pay-method"]:checked').value;
       const momoPhone = paymentMethod === 'mobile_money' ? document.getElementById('checkout-momo-phone').value.trim() : null;
 
       if (paymentMethod === 'mobile_money' && !momoPhone) {
-        alert("Please provide your MTN / Airtel number for payment.");
+        alert("Please provide your Mobile Money phone number for payment processing.");
         return;
       }
 
@@ -929,7 +1402,7 @@
       const data = await res.json();
       cart = {};
       renderCart();
-      alert(`Order placed successfully!\nTracking: ${data.tracking_code}\nDelivery PIN: ${data.delivery_pin}`);
+      alert(`Order placed successfully!\nMethod: ${paymentMethod.toUpperCase()}\nTracking: ${data.tracking_code}\nDelivery PIN: ${data.delivery_pin}`);
       document.getElementById('cust-track-code').value = data.tracking_code;
       lookupTracking();
     }
@@ -944,13 +1417,15 @@
       document.getElementById('tracking-result-box').classList.remove('hidden');
       document.getElementById('track-status').innerText = data.tracking.delivery_status.toUpperCase();
       document.getElementById('track-code-val').innerText = data.tracking.tracking_code;
-      document.getElementById('track-pay-val').innerText = `${data.tracking.payment_method === 'mobile_money' ? 'MoMo' : 'Cash'} ($${data.tracking.total_amount})`;
+      document.getElementById('track-pay-val').innerText = `${data.tracking.payment_method === 'mobile_money' ? 'Mobile Money' : 'Cash on Delivery'} ($${data.tracking.total_amount})`;
       document.getElementById('track-addr-val').innerText = data.tracking.shipping_address;
       document.getElementById('track-pin-val').innerText = data.tracking.delivery_pin || '----';
     }
 
-    checkAuthState();
+    // Initialize application
+    updateAuthDisplay();
     initStore();
+    syncRoute();
   </script>
 </body>
 </html>
