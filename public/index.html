@@ -31,7 +31,7 @@
         </span>
         <div>
           <h1 class="font-serif-title text-xl font-bold tracking-tight text-amber-100">The IQ Bakery</h1>
-          <p class="text-[11px] text-amber-400 font-medium">Fine Confectionery & Dispatch</p>
+          <p class="text-[11px] text-amber-400 font-medium">Fine Confectionery & Dispatch (Kampala)</p>
         </div>
       </div>
 
@@ -57,14 +57,12 @@
 
   <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
 
-    <!-- ========================================== -->
-    <!-- 1. CUSTOMER STOREFRONT & TRACKER           -->
-    <!-- ========================================== -->
+    <!-- 1. CUSTOMER STOREFRONT & TRACKER -->
     <div id="sec-customer-store" class="space-y-8">
       <div class="rounded-3xl bg-gradient-to-r from-amber-700 to-amber-900 text-white p-8 sm:p-12 shadow-xl">
-        <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold uppercase">Fresh Batches</span>
+        <span class="px-3 py-1 rounded-full bg-amber-500/30 text-amber-200 text-xs font-semibold uppercase">Fresh Batches • Kampala</span>
         <h2 class="font-serif-title text-3xl sm:text-5xl font-bold mt-2">Artisan Cakes & Sweet Delights</h2>
-        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes with real-time temperature-safe dispatch directly to your doorstep.</p>
+        <p class="text-amber-100 text-sm mt-2 max-w-xl">Order handcrafted celebration cakes in UGX with real-time temperature-safe dispatch directly to your doorstep.</p>
       </div>
 
       <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm flex flex-col sm:flex-row gap-2">
@@ -79,7 +77,7 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
           <div><p class="text-stone-400">Tracking Code:</p><p id="track-code-val" class="font-mono font-bold text-stone-800"></p></div>
-          <div><p class="text-stone-400">Payment:</p><p id="track-pay-val" class="font-semibold text-stone-800"></p></div>
+          <div><p class="text-stone-400">Payment:</p><p id="track-pay-val" class="font-semibold text-stone-800 font-mono"></p></div>
           <div><p class="text-stone-400">Destination:</p><p id="track-addr-val" class="font-semibold text-stone-800"></p></div>
           <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-center">
             <p class="text-amber-800 font-bold uppercase tracking-wider text-[10px]">Your Delivery PIN</p>
@@ -118,8 +116,8 @@
           </div>
 
           <div class="border-t border-stone-100 pt-3 text-xs space-y-1">
-            <div class="flex justify-between"><span>Subtotal:</span><span id="cart-subtotal" class="font-bold">$0.00</span></div>
-            <div class="flex justify-between text-stone-900 font-bold text-sm"><span>Total Due:</span><span id="cart-total">$0.00</span></div>
+            <div class="flex justify-between"><span>Subtotal:</span><span id="cart-subtotal" class="font-bold font-mono">UGX 0</span></div>
+            <div class="flex justify-between text-stone-900 font-bold text-sm"><span>Total Due:</span><span id="cart-total" class="font-mono text-amber-700">UGX 0</span></div>
           </div>
           <button onclick="handleCustomerCheckout()" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl transition">
             Place Order
@@ -128,9 +126,7 @@
       </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- 2. BRANDED CUSTOMER AUTH (SIGN IN/UP)      -->
-    <!-- ========================================== -->
+    <!-- 2. BRANDED CUSTOMER AUTH (SIGN IN/UP) -->
     <div id="sec-customer-auth" class="hidden max-w-md mx-auto my-6 bg-white p-8 rounded-3xl border border-stone-200 shadow-xl space-y-6">
       <div class="text-center space-y-2">
         <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto text-xl font-bold shadow-inner">
@@ -263,7 +259,7 @@
       </form>
     </div>
 
-    <!-- Kitchen Queue -->
+    <!-- Dispatch Queue -->
     <div id="sec-dispatch-dashboard" class="hidden space-y-6">
       <div class="flex justify-between items-center border-b pb-4">
         <div>
@@ -304,19 +300,14 @@
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- 3. ADVANCED ADMIN CONSOLE (USERS, PRODUCTS, ACCOUNTS, AUDIT) -->
-    <!-- ======================================================== -->
+    <!-- 3. ADVANCED ADMIN CONSOLE -->
     <div id="sec-admin-dashboard" class="hidden space-y-6">
-      
-      <!-- Top Title & Navigation Tabs -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-stone-200 pb-4">
         <div>
           <h2 class="text-2xl font-bold font-serif-title text-stone-900">Bakery Administration</h2>
-          <p class="text-xs text-stone-500">Personnel Roster, Catalog Management, Financial Ledger & Audit Trail</p>
+          <p class="text-xs text-stone-500">Personnel Roster, Catalog Management, Financial Ledger (UGX) & Audit Trail</p>
         </div>
         
-        <!-- Tab Selector -->
         <div class="flex items-center gap-1.5 p-1 bg-stone-200 rounded-2xl text-xs font-semibold">
           <button id="admin-tab-users" onclick="switchAdminTab('users')" class="px-3.5 py-1.5 rounded-xl transition bg-white text-stone-900 shadow-sm">
             <i class="fa-solid fa-users mr-1 text-amber-600"></i> Users & Roster
@@ -325,7 +316,7 @@
             <i class="fa-solid fa-cake-candles mr-1 text-amber-600"></i> Products
           </button>
           <button id="admin-tab-accounts" onclick="switchAdminTab('accounts')" class="px-3.5 py-1.5 rounded-xl transition text-stone-600 hover:text-stone-900">
-            <i class="fa-solid fa-coins mr-1 text-emerald-600"></i> Accounts
+            <i class="fa-solid fa-coins mr-1 text-emerald-600"></i> Accounts (UGX)
           </button>
           <button id="admin-tab-audit" onclick="switchAdminTab('audit')" class="px-3.5 py-1.5 rounded-xl transition text-stone-600 hover:text-stone-900">
             <i class="fa-solid fa-clipboard-list mr-1 text-indigo-600"></i> Audit Trail
@@ -355,7 +346,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <!-- Provision User Form -->
           <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
             <h3 class="font-bold text-stone-900 text-sm flex items-center gap-2">
               <i class="fa-solid fa-user-plus text-amber-600"></i> Provision Personnel
@@ -415,7 +405,6 @@
             </div>
           </div>
 
-          <!-- Personnel Directory Table -->
           <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
             <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
               <div>
@@ -454,11 +443,9 @@
         </div>
       </div>
 
-      <!-- TAB 2: PRODUCTS & CATALOG CRUD -->
+      <!-- TAB 2: PRODUCTS & CATALOG CRUD (UGX) -->
       <div id="admin-panel-products" class="hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          <!-- Add / Edit Product Form -->
           <div class="lg:col-span-1 bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-4">
             <h3 id="product-form-title" class="font-bold text-stone-900 text-sm flex items-center gap-2">
               <i class="fa-solid fa-cake-candles text-amber-600"></i> Add New Specialty Cake
@@ -471,8 +458,8 @@
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="block font-semibold text-stone-600 mb-1">Price ($)</label>
-                  <input type="number" step="0.5" id="prod-price" required placeholder="32.00" class="w-full px-3 py-2 border rounded-xl font-mono" />
+                  <label class="block font-semibold text-stone-600 mb-1">Price (UGX)</label>
+                  <input type="number" step="500" id="prod-price" required placeholder="120000" class="w-full px-3 py-2 border rounded-xl font-mono" />
                 </div>
                 <div>
                   <label class="block font-semibold text-stone-600 mb-1">Stock</label>
@@ -493,8 +480,8 @@
                 <input type="url" id="prod-image" placeholder="https://images.unsplash.com/photo-..." class="w-full px-3 py-2 border rounded-xl" />
               </div>
               <div>
-                <label class="block font-semibold text-stone-600 mb-1">Description / Ingredients</label>
-                <textarea id="prod-desc" rows="2" placeholder="Velvety sponge with Madagascar cream cheese..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+                <label class="block font-semibold text-stone-600 mb-1">Description / Inscription</label>
+                <textarea id="prod-desc" rows="2" placeholder="Velvety sponge with cream cheese..." class="w-full px-3 py-2 border rounded-xl"></textarea>
               </div>
               <div class="flex gap-2 pt-2">
                 <button type="submit" id="btn-save-product" class="flex-grow py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl transition shadow">
@@ -507,11 +494,10 @@
             </form>
           </div>
 
-          <!-- Products Table -->
           <div class="lg:col-span-2 bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden flex flex-col">
             <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
               <div>
-                <h3 class="font-bold text-stone-900 text-sm">Bakery Catalog</h3>
+                <h3 class="font-bold text-stone-900 text-sm">Bakery Catalog (UGX)</h3>
                 <p class="text-xs text-stone-400">Live products available for customer ordering</p>
               </div>
               <button onclick="loadAdminProducts()" class="px-2.5 py-1 bg-stone-900 text-white rounded-lg text-xs font-semibold">
@@ -534,37 +520,35 @@
               </table>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- TAB 3: ACCOUNTS & FINANCIAL LEDGER -->
+      <!-- TAB 3: ACCOUNTS & FINANCIAL LEDGER (UGX) -->
       <div id="admin-panel-accounts" class="hidden space-y-6">
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
             <p class="text-[11px] font-semibold text-stone-500 uppercase">Gross Revenue</p>
-            <p id="acc-gross-rev" class="text-2xl font-bold text-stone-900 mt-1 font-mono">$0.00</p>
+            <p id="acc-gross-rev" class="text-2xl font-bold text-stone-900 mt-1 font-mono">UGX 0</p>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
             <p class="text-[11px] font-semibold text-emerald-700 uppercase">Cash on Delivery</p>
-            <p id="acc-cash-rev" class="text-2xl font-bold text-emerald-600 mt-1 font-mono">$0.00</p>
+            <p id="acc-cash-rev" class="text-2xl font-bold text-emerald-600 mt-1 font-mono">UGX 0</p>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
             <p class="text-[11px] font-semibold text-amber-700 uppercase">Mobile Money (MOMO)</p>
-            <p id="acc-momo-rev" class="text-2xl font-bold text-amber-600 mt-1 font-mono">$0.00</p>
+            <p id="acc-momo-rev" class="text-2xl font-bold text-amber-600 mt-1 font-mono">UGX 0</p>
           </div>
           <div class="bg-white p-4 rounded-2xl border border-stone-200 shadow-sm">
             <p class="text-[11px] font-semibold text-stone-500 uppercase">Pending Settlement</p>
-            <p id="acc-pending-rev" class="text-2xl font-bold text-indigo-600 mt-1 font-mono">$0.00</p>
+            <p id="acc-pending-rev" class="text-2xl font-bold text-indigo-600 mt-1 font-mono">UGX 0</p>
           </div>
         </div>
 
-        <!-- Ledger Table -->
         <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-stone-100 flex justify-between items-center bg-stone-50/50">
             <div>
               <h3 class="font-bold text-stone-900 text-sm">Recent Order Transactions</h3>
-              <p class="text-xs text-stone-400">Reconciliation records for cash collections and digital mobile money</p>
+              <p class="text-xs text-stone-400">Reconciliation records for cash collections and mobile money</p>
             </div>
             <button onclick="loadAdminAccounts()" class="px-2.5 py-1 bg-stone-900 text-white rounded-lg text-xs font-semibold">
               <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Ledger
@@ -630,11 +614,16 @@
     let latestGeneratedCredentials = null;
     let isCustomerSignUp = false;
 
-    // Default Catalog Fallback
+    // Helper: Format to UGX Currency
+    function formatUGX(num) {
+      return 'UGX ' + Math.round(Number(num) || 0).toLocaleString();
+    }
+
+    // Default Bakery Catalog in UGX
     let BAKERY_ITEMS = [
-      { id: 'cake-1', name: 'Belgian Chocolate Truffle Cake (1kg)', price: 30.00, img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
-      { id: 'cake-2', name: 'Madagascar Bourbon Vanilla (1kg)', price: 26.00, img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=500' },
-      { id: 'cake-3', name: 'French Macaron Gift Collection (12pcs)', price: 18.00, img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' }
+      { id: 'cake-1', name: 'Belgian Chocolate Truffle Cake (1kg)', price: 115000, img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500' },
+      { id: 'cake-2', name: 'Madagascar Bourbon Vanilla (1kg)', price: 95000, img: 'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=500' },
+      { id: 'cake-3', name: 'French Macaron Gift Collection (12pcs)', price: 65000, img: 'https://images.unsplash.com/photo-1569864321398-a6210f01193a?w=500' }
     ];
 
     // ROUTING
@@ -720,7 +709,7 @@
         tabSignup.className = "py-2 rounded-xl transition bg-white text-stone-900 shadow-sm";
         tabLogin.className = "py-2 rounded-xl transition text-stone-500 hover:text-stone-900";
         title.innerText = "Create Your Account";
-        subtitle.innerText = "Join The IQ Bakery for fast confectionery ordering and order tracking";
+        subtitle.innerText = "Join The IQ Bakery for fast confectionery ordering and order tracking in Kampala";
         btn.innerHTML = `<span>Create Account</span> <i class="fa-solid fa-user-plus text-[11px]"></i>`;
         nameField.classList.remove('hidden');
         phoneField.classList.remove('hidden');
@@ -791,9 +780,7 @@
       updateAuthDisplay();
     }
 
-    // ==========================================
-    // ADMIN TAB SWITCHER & CONTROLLERS
-    // ==========================================
+    // ADMIN TABS
     function switchAdminTab(tab) {
       ['users', 'products', 'accounts', 'audit'].forEach(t => {
         const panel = document.getElementById(`admin-panel-${t}`);
@@ -811,7 +798,6 @@
       if (tab === 'audit') loadAdminAuditTrail();
     }
 
-    // 1. ADMIN: USERS CRUD
     function cleanSudoInput(raw) {
       return (raw || '').trim().toLowerCase().replace(/@.*$/, '').replace(/\.?theiqstore\.com/gi, '').replace(/[^a-z0-9.]/g, '.').replace(/\.+/g, '.').replace(/^\.|\.$/g, '');
     }
@@ -985,7 +971,7 @@
       }
     }
 
-    // 2. ADMIN: PRODUCTS CRUD
+    // 2. ADMIN PRODUCTS CRUD
     async function loadAdminProducts() {
       const tbody = document.getElementById('admin-products-body');
       try {
@@ -1009,7 +995,7 @@
               </div>
             </td>
             <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-800">${p.category || 'Cakes'}</span></td>
-            <td class="p-3 font-mono font-bold text-stone-800">$${parseFloat(p.price).toFixed(2)}</td>
+            <td class="p-3 font-mono font-bold text-stone-800">${formatUGX(p.price)}</td>
             <td class="p-3 font-mono">${p.stock}</td>
             <td class="p-3">
               <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${p.is_available ? 'bg-emerald-100 text-emerald-800' : 'bg-stone-200 text-stone-600'}">
@@ -1113,7 +1099,7 @@
       }
     }
 
-    // 3. ADMIN: ACCOUNTS & LEDGER
+    // 3. ADMIN ACCOUNTS (UGX)
     async function loadAdminAccounts() {
       const tbody = document.getElementById('admin-accounts-body');
       try {
@@ -1122,10 +1108,10 @@
         if (!res.ok) throw new Error(data.error);
 
         const summary = data.summary || {};
-        document.getElementById('acc-gross-rev').innerText = `$${parseFloat(summary.gross_revenue || 0).toFixed(2)}`;
-        document.getElementById('acc-cash-rev').innerText = `$${parseFloat(summary.cash_collected || 0).toFixed(2)}`;
-        document.getElementById('acc-momo-rev').innerText = `$${parseFloat(summary.momo_collected || 0).toFixed(2)}`;
-        document.getElementById('acc-pending-rev').innerText = `$${parseFloat(summary.pending_settlement || 0).toFixed(2)}`;
+        document.getElementById('acc-gross-rev').innerText = formatUGX(summary.gross_revenue || 0);
+        document.getElementById('acc-cash-rev').innerText = formatUGX(summary.cash_collected || 0);
+        document.getElementById('acc-momo-rev').innerText = formatUGX(summary.momo_collected || 0);
+        document.getElementById('acc-pending-rev').innerText = formatUGX(summary.pending_settlement || 0);
 
         const txs = data.transactions || [];
         if (txs.length === 0) {
@@ -1136,13 +1122,13 @@
         tbody.innerHTML = txs.map(t => `
           <tr class="hover:bg-stone-50 font-mono">
             <td class="p-3 font-bold text-amber-700">${t.tracking_code || 'N/A'}</td>
-            <td class="p-3 font-sans font-semibold text-stone-800">${t.customer_name || 'Guest/Walk-in'}</td>
+            <td class="p-3 font-sans font-semibold text-stone-800">${t.customer_name || 'Customer'}</td>
             <td class="p-3">
               <span class="px-2 py-0.5 rounded font-bold text-[10px] ${t.payment_method === 'mobile_money' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
                 ${t.payment_method === 'mobile_money' ? 'MOMO' : 'COD (Cash)'}
               </span>
             </td>
-            <td class="p-3 font-bold text-stone-900">$${parseFloat(t.total_amount).toFixed(2)}</td>
+            <td class="p-3 font-bold text-stone-900">${formatUGX(t.total_amount)}</td>
             <td class="p-3 font-sans">
               <span class="px-2 py-0.5 rounded text-[10px] font-bold ${t.payment_status.includes('paid') || t.payment_status.includes('confirmed') ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">
                 ${t.payment_status}
@@ -1157,7 +1143,7 @@
       }
     }
 
-    // 4. ADMIN: AUDIT TRAIL
+    // 4. ADMIN AUDIT TRAIL
     async function loadAdminAuditTrail() {
       const tbody = document.getElementById('admin-audit-body');
       try {
@@ -1186,7 +1172,7 @@
       }
     }
 
-    // DISPATCH QUEUE & RIDER OPERATIONS
+    // DISPATCH & RIDER OPERATIONS
     async function loadDispatchQueue() {
       const tbody = document.getElementById('dispatch-table-body');
       try {
@@ -1209,6 +1195,7 @@
               <span class="px-2 py-0.5 rounded text-[11px] font-bold ${o.payment_method === 'mobile_money' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
                 ${o.payment_method === 'mobile_money' ? 'Mobile Money' : 'Cash on Delivery'}
               </span>
+              <p class="font-mono font-bold text-stone-800 text-[11px] mt-0.5">${formatUGX(o.total_amount)}</p>
             </td>
             <td class="p-3 font-mono font-bold text-stone-900 bg-amber-50/50">
               ${o.pickup_pin ? `<span class="bg-amber-200/80 text-amber-900 px-2 py-1 rounded text-xs tracking-wider">${o.pickup_pin}</span>` : 'N/A'}
@@ -1257,7 +1244,7 @@
             <div class="flex justify-between items-center">
               <span class="font-mono font-bold text-amber-700">${t.tracking_code}</span>
               <span class="px-2 py-0.5 text-xs rounded font-bold ${t.payment_method === 'cash' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                Collect: ${t.payment_method === 'cash' ? `$${t.total_amount} CASH` : 'PAID (Mobile Money)'}
+                Collect: ${t.payment_method === 'cash' ? `${formatUGX(t.total_amount)} CASH` : 'PAID (Mobile Money)'}
               </span>
             </div>
             <p class="font-bold text-stone-800 text-sm">${t.recipient_name} (${t.recipient_phone})</p>
@@ -1330,18 +1317,18 @@
           }));
         }
       } catch (e) {
-        console.log('Using default product fallback catalog.');
+        console.log('Using default product fallback catalog in UGX.');
       }
 
       grid.innerHTML = BAKERY_ITEMS.map(item => `
         <div class="bg-white border rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
           <img src="${item.img}" class="h-40 w-full object-cover" />
           <div class="p-4 space-y-2">
-            <div class="flex justify-between">
-              <h4 class="font-bold text-sm">${item.name}</h4>
-              <span class="font-mono font-bold text-amber-700 text-sm">$${item.price.toFixed(2)}</span>
+            <div class="flex justify-between items-start">
+              <h4 class="font-bold text-sm text-stone-900">${item.name}</h4>
+              <span class="font-mono font-bold text-amber-700 text-sm whitespace-nowrap ml-2">${formatUGX(item.price)}</span>
             </div>
-            <button onclick="addToCart('${item.id}')" class="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold">Add to Basket</button>
+            <button onclick="addToCart('${item.id}')" class="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-bold transition">Add to Basket</button>
           </div>
         </div>
       `).join('');
@@ -1360,11 +1347,11 @@
         if (!item) return '';
         const qty = cart[id];
         subtotal += item.price * qty;
-        return `<div class="flex justify-between py-1.5"><span>${item.name} × ${qty}</span><span class="font-bold">$${(item.price * qty).toFixed(2)}</span></div>`;
+        return `<div class="flex justify-between py-1.5"><span>${item.name} × ${qty}</span><span class="font-bold font-mono">${formatUGX(item.price * qty)}</span></div>`;
       }).join('') || '<p class="text-stone-400 py-3 text-center">Your basket is empty</p>';
 
-      document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
-      document.getElementById('cart-total').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-subtotal').innerText = formatUGX(subtotal);
+      document.getElementById('cart-total').innerText = formatUGX(subtotal);
     }
 
     async function handleCustomerCheckout() {
@@ -1375,16 +1362,23 @@
       }
       if (Object.keys(cart).length === 0) return alert("Your basket is empty.");
 
-      const address = prompt("Confirm your delivery address:", "Plot 14 Kampala Road, Suite 3B");
+      const address = prompt("Confirm your delivery address in Kampala:", "Plot 18 Clement Hill Road, Nakasero");
       if (!address) return;
 
       const paymentMethod = document.querySelector('input[name="pay-method"]:checked').value;
       const momoPhone = paymentMethod === 'mobile_money' ? document.getElementById('checkout-momo-phone').value.trim() : null;
 
       if (paymentMethod === 'mobile_money' && !momoPhone) {
-        alert("Please provide your Mobile Money phone number for payment processing.");
+        alert("Please provide your MTN or Airtel Mobile Money phone number for payment processing.");
         return;
       }
+
+      // Compute total numeric amount in UGX
+      let totalAmount = 0;
+      Object.keys(cart).forEach(id => {
+        const item = BAKERY_ITEMS.find(i => i.id === id);
+        if (item) totalAmount += item.price * cart[id];
+      });
 
       const res = await fetch(`/api/v1/deliveries/order`, {
         method: 'POST',
@@ -1393,8 +1387,8 @@
           recipient_name: currentUser.name,
           recipient_phone: momoPhone || '+256700000000',
           shipping_address: address,
-          notes: 'Handle confectionery carefully',
-          total_amount: parseFloat(document.getElementById('cart-total').innerText.replace('$', '')),
+          notes: 'Fresh confectionery - handle upright',
+          total_amount: totalAmount,
           payment_method: paymentMethod,
           payment_phone: momoPhone
         })
@@ -1402,7 +1396,7 @@
       const data = await res.json();
       cart = {};
       renderCart();
-      alert(`Order placed successfully!\nMethod: ${paymentMethod.toUpperCase()}\nTracking: ${data.tracking_code}\nDelivery PIN: ${data.delivery_pin}`);
+      alert(`Order placed successfully!\nMethod: ${paymentMethod.toUpperCase()}\nTotal: ${formatUGX(totalAmount)}\nTracking: ${data.tracking_code}\nDelivery PIN: ${data.delivery_pin}`);
       document.getElementById('cust-track-code').value = data.tracking_code;
       lookupTracking();
     }
@@ -1417,12 +1411,12 @@
       document.getElementById('tracking-result-box').classList.remove('hidden');
       document.getElementById('track-status').innerText = data.tracking.delivery_status.toUpperCase();
       document.getElementById('track-code-val').innerText = data.tracking.tracking_code;
-      document.getElementById('track-pay-val').innerText = `${data.tracking.payment_method === 'mobile_money' ? 'Mobile Money' : 'Cash on Delivery'} ($${data.tracking.total_amount})`;
+      document.getElementById('track-pay-val').innerText = `${data.tracking.payment_method === 'mobile_money' ? 'Mobile Money' : 'Cash on Delivery'} (${formatUGX(data.tracking.total_amount)})`;
       document.getElementById('track-addr-val').innerText = data.tracking.shipping_address;
       document.getElementById('track-pin-val').innerText = data.tracking.delivery_pin || '----';
     }
 
-    // Initialize application
+    // App Initialization
     updateAuthDisplay();
     initStore();
     syncRoute();
