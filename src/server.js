@@ -45,13 +45,21 @@ app.post(
   '/api/v1/admin/upload-image',
   requireAuth,
   requireRole(['admin']),
-  upload.single('image'),
-  (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No image file was received' });
-    }
-    const publicUrl = '/uploads/' + req.file.filename;
-    res.json({ success: true, url: publicUrl });
+  (req, res, next) => {
+    upload.single('image')(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        console.error('Multer Upload Error:', err);
+        return res.status(400).json({ error: `Upload error: ${err.message}` });
+      } else if (err) {
+        console.error('Unknown Upload Error:', err);
+        return res.status(500).json({ error: `Server error: ${err.message}` });
+      }
+      if (!req.file) {
+        return res.status(400).json({ error: 'No image file was received' });
+      }
+      const publicUrl = '/uploads/' + req.file.filename;
+      res.json({ success: true, url: publicUrl });
+    });
   }
 );
 
@@ -91,3 +99,4 @@ const PORT = process.env.PORT || 10000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`TheIQstore operational on port ${PORT}`);
 });
+
